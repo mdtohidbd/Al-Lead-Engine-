@@ -66,38 +66,38 @@ export const Conversations: React.FC = () => {
   return (
     <div className="flex flex-col space-y-6 animate-fade-in pb-8">
       {/* Header Strategy */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 glass-card p-6 rounded-3xl border border-slate-200/80 shadow-xs">
         <div>
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200/60 mb-2">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-100/80 text-emerald-700 border border-emerald-200/60 mb-2">
             <span className="material-symbols-outlined text-sm">chat</span>
-            <span className="text-[11px] font-bold uppercase tracking-wider">Live Engagement Hub</span>
+            <span className="text-[10px] font-extrabold uppercase tracking-wider">Live Engagement Hub</span>
           </div>
-          <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Conversation History</h1>
+          <h1 className="text-2xl font-extrabold text-slate-900 tracking-tight">Conversation History</h1>
           <p className="text-xs text-slate-500 mt-0.5">
             Real-time AI engagement tracking, automated lead qualification, and agent takeover.
           </p>
         </div>
 
         <div className="flex items-center gap-3">
-          <div className="flex bg-slate-100 p-1 rounded-xl text-xs font-semibold border border-slate-200/60">
+          <div className="flex bg-slate-100/90 p-1 rounded-xl text-xs font-semibold border border-slate-200/60">
             <button
               onClick={() => setViewMode('chat')}
-              className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
-                viewMode === 'chat' ? 'bg-white text-slate-900 shadow-sm font-bold' : 'text-slate-500 hover:text-slate-800'
+              className={`px-3.5 py-1.5 rounded-lg transition-all cursor-pointer ${
+                viewMode === 'chat' ? 'bg-white text-slate-900 shadow-sm font-extrabold' : 'text-slate-500 hover:text-slate-800'
               }`}
             >
               Dual Chat View
             </button>
             <button
               onClick={() => setViewMode('table')}
-              className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
-                viewMode === 'table' ? 'bg-white text-slate-900 shadow-sm font-bold' : 'text-slate-500 hover:text-slate-800'
+              className={`px-3.5 py-1.5 rounded-lg transition-all cursor-pointer ${
+                viewMode === 'table' ? 'bg-white text-slate-900 shadow-sm font-extrabold' : 'text-slate-500 hover:text-slate-800'
               }`}
             >
               Table View
             </button>
           </div>
-          <span className="bg-emerald-100 text-emerald-800 px-3.5 py-1.5 rounded-full text-xs font-bold shadow-xs">
+          <span className="bg-emerald-100 text-emerald-800 px-3.5 py-1.5 rounded-xl text-xs font-extrabold shadow-xs">
             {conversations.length} Active Conversations
           </span>
         </div>
@@ -105,9 +105,9 @@ export const Conversations: React.FC = () => {
 
       {/* View Mode: Dual Chat View vs Table View */}
       {viewMode === 'chat' ? (
-        <div className="h-[680px] bg-white border border-slate-200/80 rounded-2xl shadow-sm overflow-hidden flex flex-col md:flex-row">
+        <div className="h-[680px] glass-card border border-slate-200/80 rounded-3xl shadow-xs overflow-hidden flex flex-col md:flex-row">
           {/* Left Side: Conversation List (320px) */}
-          <div className="w-full md:w-80 border-r border-slate-200/80 flex flex-col bg-slate-50/50 shrink-0">
+          <div className="w-full md:w-80 border-r border-slate-200/80 flex flex-col bg-slate-50/70 shrink-0">
             <div className="p-3.5 border-b border-slate-200/80 space-y-2.5">
               <div className="relative">
                 <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm">
@@ -118,27 +118,27 @@ export const Conversations: React.FC = () => {
                   placeholder="Search leads or phone..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full bg-white border border-slate-200 rounded-xl py-2 pl-9 pr-3 text-xs text-slate-800 focus:outline-none focus:border-emerald-500"
+                  className="w-full bg-white border border-slate-200 rounded-xl py-2 pl-9 pr-3 text-xs text-slate-800 focus:outline-none focus:border-emerald-500 font-medium"
                 />
               </div>
 
               {/* Filter Tabs */}
-              <div className="flex bg-slate-200/60 p-0.5 rounded-lg text-[11px] font-bold text-slate-600">
+              <div className="flex bg-slate-200/70 p-0.5 rounded-xl text-[11px] font-bold text-slate-600">
                 <button
                   onClick={() => setFilterTab('all')}
-                  className={`flex-1 py-1 rounded cursor-pointer ${filterTab === 'all' ? 'bg-white text-slate-900 shadow-xs' : ''}`}
+                  className={`flex-1 py-1 rounded-lg cursor-pointer ${filterTab === 'all' ? 'bg-white text-slate-900 shadow-xs' : ''}`}
                 >
                   All ({conversations.length})
                 </button>
                 <button
                   onClick={() => setFilterTab('ai')}
-                  className={`flex-1 py-1 rounded cursor-pointer ${filterTab === 'ai' ? 'bg-white text-emerald-700 shadow-xs' : ''}`}
+                  className={`flex-1 py-1 rounded-lg cursor-pointer ${filterTab === 'ai' ? 'bg-white text-emerald-700 shadow-xs' : ''}`}
                 >
                   AI Active
                 </button>
                 <button
                   onClick={() => setFilterTab('human')}
-                  className={`flex-1 py-1 rounded cursor-pointer ${filterTab === 'human' ? 'bg-white text-amber-700 shadow-xs' : ''}`}
+                  className={`flex-1 py-1 rounded-lg cursor-pointer ${filterTab === 'human' ? 'bg-white text-amber-700 shadow-xs' : ''}`}
                 >
                   Human
                 </button>
@@ -158,27 +158,27 @@ export const Conversations: React.FC = () => {
                         : 'hover:bg-slate-100/80'
                     }`}
                   >
-                    <div className="w-10 h-10 rounded-full bg-emerald-100 text-emerald-800 font-extrabold flex items-center justify-center shrink-0 border border-emerald-200">
+                    <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 text-white font-extrabold flex items-center justify-center shrink-0 shadow-xs">
                       {conv.leadName.charAt(0)}
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center justify-between mb-1">
-                        <span className="font-bold text-xs text-slate-900 truncate">{conv.leadName}</span>
+                        <span className="font-extrabold text-xs text-slate-900 truncate">{conv.leadName}</span>
                         <span className="text-[10px] text-slate-400 font-medium">{conv.lastMessageTime}</span>
                       </div>
-                      <div className="text-[11px] text-slate-500 truncate mb-1.5">
+                      <div className="text-[11px] text-slate-500 truncate mb-1.5 font-medium">
                         {conv.messages[conv.messages.length - 1]?.text || 'No messages yet...'}
                       </div>
                       <div className="flex items-center gap-1.5">
-                        <span className="text-[10px] font-extrabold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200/60">
+                        <span className="text-[10px] font-extrabold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200/60">
                           {conv.leadScore} pts
                         </span>
                         {conv.humanTakeover ? (
-                          <span className="text-[10px] font-extrabold text-amber-800 bg-amber-100 px-2 py-0.5 rounded">
+                          <span className="text-[10px] font-extrabold text-amber-800 bg-amber-100 px-2 py-0.5 rounded-md">
                             HUMAN
                           </span>
                         ) : (
-                          <span className="text-[10px] font-extrabold text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded">
+                          <span className="text-[10px] font-extrabold text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded-md">
                             AI AGENT
                           </span>
                         )}
@@ -192,11 +192,11 @@ export const Conversations: React.FC = () => {
 
           {/* Right Side: Active Chat Window */}
           {activeConv ? (
-            <div className="flex-1 flex flex-col bg-slate-50/60 min-w-0">
+            <div className="flex-1 flex flex-col bg-slate-50/40 min-w-0">
               {/* Active Conversation Header */}
-              <div className="p-4 bg-white border-b border-slate-200/80 flex items-center justify-between shadow-2xs">
+              <div className="p-4 bg-white border-b border-slate-200/80 flex items-center justify-between shadow-xs">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-emerald-100 text-emerald-800 font-extrabold flex items-center justify-center border border-emerald-200">
+                  <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 text-white font-extrabold flex items-center justify-center shadow-xs">
                     {activeConv.leadName.charAt(0)}
                   </div>
                   <div>
@@ -206,7 +206,7 @@ export const Conversations: React.FC = () => {
                 </div>
 
                 <div className="flex items-center gap-3">
-                  <div className="flex items-center gap-2 bg-slate-100 px-3 py-1.5 rounded-full text-xs border border-slate-200/80">
+                  <div className="flex items-center gap-2 bg-slate-100 px-3 py-1.5 rounded-xl text-xs border border-slate-200/80">
                     <span className="text-slate-500 font-medium">Control Mode:</span>
                     <span className={`font-extrabold ${activeConv.humanTakeover ? 'text-amber-600' : 'text-emerald-600'}`}>
                       {activeConv.humanTakeover ? 'Human Control' : 'AI Active'}
@@ -230,7 +230,6 @@ export const Conversations: React.FC = () => {
                 {activeConv.messages.map((msg) => {
                   const isUser = msg.sender === 'user';
                   const isAI = msg.sender === 'ai';
-                  const isAgent = msg.sender === 'agent';
 
                   return (
                     <div key={msg.id} className={`flex flex-col ${isUser ? 'items-start' : 'items-end'}`}>
@@ -240,12 +239,12 @@ export const Conversations: React.FC = () => {
                         <span>{msg.timestamp}</span>
                       </div>
                       <div
-                        className={`max-w-md p-4 rounded-2xl text-xs leading-relaxed shadow-sm whitespace-pre-wrap ${
+                        className={`max-w-md p-3.5 rounded-2xl text-xs leading-relaxed shadow-xs whitespace-pre-wrap ${
                           isUser
-                            ? 'bg-white border border-slate-200 text-slate-900 rounded-tl-xs'
+                            ? 'bg-white border border-slate-200 text-slate-900 rounded-tl-xs font-medium'
                             : isAI
-                            ? 'bg-emerald-600 text-white rounded-tr-xs shadow-emerald-600/10'
-                            : 'bg-indigo-600 text-white rounded-tr-xs shadow-indigo-600/10'
+                            ? 'bg-gradient-to-r from-emerald-600 to-teal-600 text-white rounded-tr-xs shadow-emerald-600/10 font-medium'
+                            : 'bg-gradient-to-r from-indigo-600 to-violet-600 text-white rounded-tr-xs shadow-indigo-600/10 font-medium'
                         }`}
                       >
                         {msg.text}
@@ -256,108 +255,94 @@ export const Conversations: React.FC = () => {
                 <div ref={chatEndRef} />
               </div>
 
-              {/* Chat Input & Actions */}
+              {/* Chat Input Bar */}
               <div className="p-4 bg-white border-t border-slate-200/80 space-y-3">
-                <div className="flex items-center justify-between gap-3 text-xs">
-                  <div className="flex items-center gap-2 flex-1">
-                    <span className="text-[11px] font-bold text-slate-400">Quick Template:</span>
+                <div className="flex items-center gap-3">
+                  <div className="flex-1">
                     <select
                       value={selectedTemplate}
                       onChange={handleApplyTemplate}
-                      className="bg-slate-50 border border-slate-200 text-xs font-semibold rounded-xl px-3 py-1.5 text-slate-700 focus:outline-none focus:border-emerald-500 cursor-pointer max-w-xs"
+                      className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-1.5 text-xs text-slate-700 font-semibold focus:outline-none focus:border-emerald-500"
                     >
-                      <option value="">Choose Pre-built Preset...</option>
+                      <option value="">-- Quick Response Templates --</option>
                       {templates.map((t) => (
                         <option key={t.id} value={t.id}>
-                          {t.name} — [{t.category}]
+                          {t.name} ({t.category})
                         </option>
                       ))}
                     </select>
                   </div>
-
                   <button
-                    type="button"
                     onClick={handleSimulateCustomerReply}
-                    className="px-3 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 text-[11px] font-bold rounded-lg border border-slate-200 transition-colors flex items-center gap-1 cursor-pointer"
-                    title="Simulate customer sending a WhatsApp message"
+                    className="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl border border-slate-200 transition-colors whitespace-nowrap cursor-pointer"
                   >
-                    <span className="material-symbols-outlined text-sm text-emerald-600">forum</span>
-                    Simulate Customer Message
+                    + Simulate Customer Reply
                   </button>
                 </div>
 
-                <div className="flex items-center gap-2">
+                <div className="flex gap-2">
                   <input
                     type="text"
+                    placeholder={
+                      activeConv.humanTakeover
+                        ? 'Type a message as Human Agent...'
+                        : 'AI Agent is auto-responding (Take over to message)...'
+                    }
                     value={inputText}
                     onChange={(e) => setInputText(e.target.value)}
                     onKeyDown={(e) => e.key === 'Enter' && handleSend()}
-                    placeholder={
-                      activeConv.humanTakeover
-                        ? 'Type a message as Human Sales Agent...'
-                        : 'Type message or user query...'
-                    }
-                    className="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all"
+                    className="flex-1 bg-slate-50 border border-slate-300 rounded-xl px-4 py-2.5 text-xs text-slate-900 font-medium focus:outline-none focus:border-emerald-500"
                   />
                   <button
                     onClick={handleSend}
-                    className="px-6 py-3 bg-emerald-600 text-white font-bold text-xs rounded-xl hover:bg-emerald-700 transition-all shadow-md shadow-emerald-600/20 flex items-center gap-1.5 shrink-0 cursor-pointer"
+                    className="px-5 py-2.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold text-xs rounded-xl shadow-md shadow-emerald-600/20 transition-all cursor-pointer hover-lift flex items-center gap-1 border border-emerald-400/20"
                   >
-                    <span>Send</span>
                     <span className="material-symbols-outlined text-base">send</span>
+                    Send
                   </button>
                 </div>
               </div>
             </div>
           ) : (
-            <div className="flex-1 flex items-center justify-center text-slate-400 text-xs font-semibold">
-              Select a conversation from the left to start chatting.
+            <div className="flex-1 flex items-center justify-center p-8 text-slate-400 text-xs">
+              Select a conversation to view chat log.
             </div>
           )}
         </div>
       ) : (
         /* Table View */
-        <div className="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden">
+        <div className="glass-card rounded-3xl border border-slate-200/80 shadow-xs overflow-hidden">
           <table className="w-full text-left text-xs">
             <thead className="bg-slate-50 border-b border-slate-200 text-slate-400 uppercase tracking-wider font-extrabold text-[10px]">
               <tr>
-                <th className="py-3.5 px-6">Lead Contact</th>
-                <th className="py-3.5 px-6">Phone Number</th>
-                <th className="py-3.5 px-6">Lead Score</th>
-                <th className="py-3.5 px-6">Control Mode</th>
-                <th className="py-3.5 px-6">Last Message</th>
-                <th className="py-3.5 px-6 text-right">Actions</th>
+                <th className="py-3.5 px-4">Lead</th>
+                <th className="py-3.5 px-4">Phone</th>
+                <th className="py-3.5 px-4">Mode</th>
+                <th className="py-3.5 px-4">Score</th>
+                <th className="py-3.5 px-4">Last Active</th>
+                <th className="py-3.5 px-4 text-right">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
               {filteredConversations.map((conv) => (
                 <tr key={conv.id} className="hover:bg-slate-50/80 transition-colors">
-                  <td className="py-4 px-6 font-bold text-slate-900">{conv.leadName}</td>
-                  <td className="py-4 px-6 text-slate-600 font-mono">{conv.leadPhone}</td>
-                  <td className="py-4 px-6 font-extrabold text-emerald-600">{conv.leadScore} pts</td>
-                  <td className="py-4 px-6">
+                  <td className="py-3.5 px-4 font-bold text-slate-900">{conv.leadName}</td>
+                  <td className="py-3.5 px-4 text-slate-600 font-mono">{conv.leadPhone}</td>
+                  <td className="py-3.5 px-4">
                     <span
-                      className={`px-3 py-1 rounded-full text-[10px] font-extrabold ${
+                      className={`px-2.5 py-1 rounded-full text-[10px] font-extrabold ${
                         conv.humanTakeover ? 'bg-amber-100 text-amber-800' : 'bg-emerald-100 text-emerald-800'
                       }`}
                     >
-                      {conv.humanTakeover ? 'Human Control' : 'AI Active'}
+                      {conv.humanTakeover ? 'HUMAN' : 'AI AGENT'}
                     </span>
                   </td>
-                  <td className="py-4 px-6 text-slate-400 text-[11px]">{conv.lastMessageTime}</td>
-                  <td className="py-4 px-6 text-right space-x-2">
-                    <button
-                      onClick={() => {
-                        setActiveConvId(conv.id);
-                        setViewMode('chat');
-                      }}
-                      className="px-3 py-1.5 bg-emerald-50 text-emerald-700 font-bold rounded-lg border border-emerald-200 hover:bg-emerald-100 transition-colors cursor-pointer"
-                    >
-                      Open Chat
-                    </button>
+                  <td className="py-3.5 px-4 font-extrabold text-emerald-600">{conv.leadScore} pts</td>
+                  <td className="py-3.5 px-4 text-slate-500">{conv.lastMessageTime}</td>
+                  <td className="py-3.5 px-4 text-right">
                     <button
                       onClick={() => deleteConversation(conv.id)}
-                      className="p-1.5 text-slate-400 hover:text-red-500 rounded-lg hover:bg-slate-100 transition-colors cursor-pointer"
+                      className="p-1.5 text-slate-400 hover:text-rose-600 rounded-lg hover:bg-rose-50 cursor-pointer transition-colors"
                       title="Delete Conversation"
                     >
                       <span className="material-symbols-outlined text-base">delete</span>
@@ -369,40 +354,6 @@ export const Conversations: React.FC = () => {
           </table>
         </div>
       )}
-
-      {/* Metric Footer Stat Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex items-center gap-4">
-          <div className="w-11 h-11 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center font-extrabold border border-emerald-100">
-            <span className="material-symbols-outlined text-xl">bolt</span>
-          </div>
-          <div>
-            <div className="text-[10px] font-extrabold uppercase tracking-wider text-slate-400">Response Speed</div>
-            <div className="text-xl font-extrabold text-slate-900">&lt; 1.2 Seconds</div>
-          </div>
-        </div>
-
-        <div className="bg-white p-5 rounded-xl border border-slate-200/80 shadow-sm flex items-center gap-4">
-          <div className="w-11 h-11 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center font-extrabold border border-blue-100">
-            <span className="material-symbols-outlined text-xl">chat_bubble</span>
-          </div>
-          <div>
-            <div className="text-[10px] font-extrabold uppercase tracking-wider text-slate-400">Messages Today</div>
-            <div className="text-xl font-extrabold text-slate-900">312 Sent</div>
-          </div>
-        </div>
-
-        <div className="bg-white p-5 rounded-xl border border-slate-200/80 shadow-sm flex items-center gap-4">
-          <div className="w-11 h-11 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center font-extrabold border border-emerald-100">
-            <span className="material-symbols-outlined text-xl">trending_up</span>
-          </div>
-          <div>
-            <div className="text-[10px] font-extrabold uppercase tracking-wider text-slate-400">Auto Qualified Leads</div>
-            <div className="text-xl font-extrabold text-emerald-600">89.4% Rate</div>
-          </div>
-        </div>
-      </div>
     </div>
   );
 };
-

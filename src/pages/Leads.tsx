@@ -98,44 +98,43 @@ export const Leads: React.FC = () => {
     link.setAttribute('download', `greenlead_leads_${new Date().toISOString().split('T')[0]}.csv`);
     document.body.appendChild(link);
     link.click();
-    document.body.removeChild(link);
   };
 
   return (
-    <div className="flex flex-col space-y-6 animate-fade-in">
+    <div className="flex flex-col space-y-6 animate-fade-in pb-8">
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-[#191c1e]">Leads Management</h1>
-          <p className="text-xs text-gray-500">Real-time AI qualification tracking, scoring breakdown, and lead conversions.</p>
+          <h1 className="text-2xl font-extrabold text-slate-900 tracking-tight">Leads Management</h1>
+          <p className="text-xs text-slate-500 mt-1">Real-time AI qualification tracking, scoring breakdown, and lead conversions.</p>
         </div>
 
         <div className="flex items-center gap-3">
           <div className="relative w-64">
-            <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm">
+            <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm">
               search
             </span>
             <input
               type="text"
-              placeholder="Search leads..."
+              placeholder="Search leads, email, company..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full bg-white border border-gray-200/80 rounded-lg py-1.5 pl-9 pr-4 text-xs text-[#191c1e] focus:outline-none focus:border-[#22c55e]"
+              className="w-full bg-white border border-slate-200/90 rounded-xl py-2 pl-9 pr-4 text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/10 transition-all shadow-xs"
             />
           </div>
           <button
             onClick={exportToCSV}
-            className="px-3 py-2 bg-gray-100 text-gray-700 font-semibold text-xs rounded-lg hover:bg-gray-200 transition-all flex items-center gap-1.5"
+            className="px-3.5 py-2 bg-white hover:bg-slate-50 text-slate-700 font-bold text-xs rounded-xl border border-slate-200 transition-all flex items-center gap-1.5 shadow-xs cursor-pointer"
             title="Export to CSV"
           >
-            <span className="material-symbols-outlined text-sm">download</span>
+            <span className="material-symbols-outlined text-base text-slate-500">download</span>
             Export
           </button>
           <button
             onClick={() => setShowAddModal(true)}
-            className="px-4 py-2 bg-[#22c55e] text-white font-bold text-xs rounded-lg hover:bg-emerald-600 transition-all shadow-md shadow-[#22c55e]/20 flex items-center gap-1.5 shrink-0"
+            className="px-4 py-2 bg-gradient-to-r from-emerald-600 to-teal-600 text-white font-bold text-xs rounded-xl hover:from-emerald-500 hover:to-teal-500 transition-all shadow-md shadow-emerald-600/20 flex items-center gap-1.5 shrink-0 cursor-pointer border border-emerald-400/20 hover-lift"
           >
-            <span className="material-symbols-outlined text-sm">add</span>
+            <span className="material-symbols-outlined text-base">add</span>
             New Lead
           </button>
         </div>
@@ -143,17 +142,19 @@ export const Leads: React.FC = () => {
 
       {/* Main Grid: Data Table + Drawer */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        <div className={`${selectedLead ? 'lg:col-span-8' : 'lg:col-span-12'} bg-white rounded-xl border border-gray-200/80 shadow-sm overflow-hidden flex flex-col transition-all`}>
+        <div className={`${selectedLead ? 'lg:col-span-8' : 'lg:col-span-12'} glass-card rounded-3xl border border-slate-200/80 shadow-xs overflow-hidden flex flex-col transition-all`}>
           {/* Filter Bar */}
-          <div className="p-4 border-b border-gray-100 flex flex-wrap items-center justify-between gap-4 bg-gray-50/50 text-xs">
-            <div className="flex items-center gap-2">
-              <span className="font-bold text-gray-400 uppercase text-[10px] tracking-wider mr-1">Status:</span>
+          <div className="p-4 border-b border-slate-200/70 flex flex-wrap items-center justify-between gap-4 bg-slate-50/80 text-xs">
+            <div className="flex items-center gap-2 flex-wrap">
+              <span className="font-extrabold text-slate-400 uppercase text-[10px] tracking-wider mr-1">Filter Status:</span>
               {['All', 'Hot', 'Warm', 'Cold', 'Qualified'].map((st) => (
                 <button
                   key={st}
                   onClick={() => setFilterStatus(st)}
-                  className={`px-3 py-1 rounded-full font-semibold text-xs transition-colors ${
-                    filterStatus === st ? 'bg-[#22c55e] text-white' : 'bg-gray-200/60 text-gray-600 hover:bg-gray-200'
+                  className={`px-3 py-1 rounded-full font-bold text-xs transition-all cursor-pointer ${
+                    filterStatus === st
+                      ? 'bg-emerald-600 text-white shadow-sm shadow-emerald-600/20'
+                      : 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-100'
                   }`}
                 >
                   {st}
@@ -164,49 +165,49 @@ export const Leads: React.FC = () => {
             <div className="flex items-center gap-2">
               <button
                 onClick={() => setHotOnly(!hotOnly)}
-                className={`w-9 h-5 rounded-full relative transition-colors ${
-                  hotOnly ? 'bg-[#22c55e]' : 'bg-gray-300'
+                className={`w-9 h-5 rounded-full relative transition-colors cursor-pointer ${
+                  hotOnly ? 'bg-emerald-600' : 'bg-slate-300'
                 }`}
               >
                 <div
-                  className={`w-3.5 h-3.5 bg-white rounded-full absolute top-0.75 transition-all ${
+                  className={`w-3.5 h-3.5 bg-white rounded-full absolute top-0.75 transition-all shadow-xs ${
                     hotOnly ? 'right-1' : 'left-1'
                   }`}
                 ></div>
               </button>
-              <span className="font-semibold text-gray-700 text-xs">Hot leads only</span>
+              <span className="font-bold text-slate-700 text-xs">Hot leads only</span>
             </div>
           </div>
 
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs">
-              <thead className="bg-gray-50 border-b border-gray-200 text-gray-400 uppercase tracking-wider font-semibold text-[10px]">
+              <thead className="bg-slate-50/90 border-b border-slate-200 text-slate-400 uppercase tracking-wider font-extrabold text-[10px]">
                 <tr>
-                  <th className="py-3 px-4">Lead</th>
-                  <th className="py-3 px-4">Status</th>
-                  <th className="py-3 px-4">Score</th>
-                  <th className="py-3 px-4">Company</th>
-                  <th className="py-3 px-4">Last Activity</th>
-                  <th className="py-3 px-4 text-right">Actions</th>
+                  <th className="py-3.5 px-4">Lead</th>
+                  <th className="py-3.5 px-4">Status</th>
+                  <th className="py-3.5 px-4">Score</th>
+                  <th className="py-3.5 px-4">Company</th>
+                  <th className="py-3.5 px-4">Last Activity</th>
+                  <th className="py-3.5 px-4 text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-100">
+              <tbody className="divide-y divide-slate-100">
                 {filteredLeads.map((lead) => (
                   <tr
                     key={lead.id}
                     onClick={() => setSelectedLead(lead)}
-                    className={`hover:bg-gray-50/80 cursor-pointer transition-colors ${
-                      selectedLead?.id === lead.id ? 'bg-emerald-50/40 font-medium' : ''
+                    className={`hover:bg-slate-50/90 cursor-pointer transition-colors ${
+                      selectedLead?.id === lead.id ? 'bg-emerald-50/50 font-medium' : ''
                     }`}
                   >
-                    <td className="py-3.5 px-4 font-semibold text-[#191c1e]">
+                    <td className="py-3.5 px-4 font-bold text-slate-900">
                       <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-full bg-emerald-100 text-emerald-700 font-bold flex items-center justify-center shrink-0">
+                        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-emerald-500 to-teal-600 text-white font-extrabold flex items-center justify-center shrink-0 shadow-xs">
                           {lead.name.charAt(0)}
                         </div>
                         <div>
-                          <div className="font-bold text-[#191c1e] text-xs">{lead.name}</div>
-                          <div className="text-[10px] text-gray-400 font-normal">{lead.phone}</div>
+                          <div className="font-extrabold text-slate-900 text-xs">{lead.name}</div>
+                          <div className="text-[10px] text-slate-400 font-semibold">{lead.phone}</div>
                         </div>
                       </div>
                     </td>
@@ -215,12 +216,12 @@ export const Leads: React.FC = () => {
                         value={lead.status}
                         onClick={(e) => e.stopPropagation()}
                         onChange={(e) => updateLeadStatus(lead.id, e.target.value as LeadStatus)}
-                        className={`px-2 py-0.5 rounded-full text-[10px] font-bold border-0 cursor-pointer focus:outline-none ${
+                        className={`px-2.5 py-1 rounded-full text-[10px] font-extrabold border-0 cursor-pointer focus:outline-none shadow-xs ${
                           lead.status === 'Hot' || lead.status === 'Qualified'
-                            ? 'bg-emerald-100 text-emerald-700'
+                            ? 'bg-emerald-100 text-emerald-800'
                             : lead.status === 'Warm'
-                            ? 'bg-amber-100 text-amber-700'
-                            : 'bg-blue-100 text-blue-700'
+                            ? 'bg-amber-100 text-amber-800'
+                            : 'bg-blue-100 text-blue-800'
                         }`}
                       >
                         <option value="Hot">Hot</option>
@@ -233,24 +234,24 @@ export const Leads: React.FC = () => {
                     <td className="py-3.5 px-4">
                       <div className="flex items-center gap-2">
                         <span
-                          className={`w-2 h-2 rounded-full ${
-                            lead.leadScore >= 85 ? 'bg-emerald-500' : lead.leadScore >= 60 ? 'bg-amber-500' : 'bg-red-400'
+                          className={`w-2.5 h-2.5 rounded-full ${
+                            lead.leadScore >= 85 ? 'bg-emerald-500 shadow-[0_0_8px_rgba(34,197,94,0.6)]' : lead.leadScore >= 60 ? 'bg-amber-500' : 'bg-rose-500'
                           }`}
                         ></span>
-                        <span className="font-bold text-[#191c1e]">{lead.leadScore}</span>
+                        <span className="font-extrabold text-slate-900">{lead.leadScore}</span>
                       </div>
                     </td>
                     <td className="py-3.5 px-4">
-                      <div className="text-gray-700 font-medium">{lead.company}</div>
-                      <div className="text-[10px] text-gray-400">{lead.companySize || 'N/A'}</div>
+                      <div className="text-slate-800 font-bold">{lead.company}</div>
+                      <div className="text-[10px] text-slate-400 font-semibold">{lead.companySize || 'N/A'}</div>
                     </td>
-                    <td className="py-3.5 px-4 text-gray-500 text-[11px]">
+                    <td className="py-3.5 px-4 text-slate-500 text-[11px] font-semibold">
                       <div>{lead.lastActive}</div>
                     </td>
                     <td className="py-3.5 px-4 text-right" onClick={(e) => e.stopPropagation()}>
                       <button
                         onClick={() => handleDelete(lead.id)}
-                        className="p-1 text-gray-400 hover:text-red-500 transition-colors"
+                        className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors cursor-pointer"
                         title="Delete Lead"
                       >
                         <span className="material-symbols-outlined text-base">delete</span>
@@ -265,17 +266,17 @@ export const Leads: React.FC = () => {
 
         {/* Lead Details Side Panel */}
         {selectedLead && (
-          <div className="lg:col-span-4 bg-white rounded-xl border border-gray-200/80 shadow-sm p-6 flex flex-col justify-between space-y-6 animate-fade-in">
+          <div className="lg:col-span-4 glass-card rounded-3xl border border-slate-200/80 shadow-xs p-6 flex flex-col justify-between space-y-6 animate-fade-in">
             <div className="space-y-6">
               {/* Drawer Header */}
-              <div className="flex items-center justify-between border-b border-gray-100 pb-4">
+              <div className="flex items-center justify-between border-b border-slate-100 pb-4">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-emerald-100 text-emerald-800 font-bold flex items-center justify-center text-lg">
+                  <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 text-white font-extrabold flex items-center justify-center text-lg shadow-md shadow-emerald-500/20">
                     {selectedLead.name.charAt(0)}
                   </div>
                   <div>
-                    <h3 className="font-bold text-sm text-[#191c1e]">{selectedLead.name}</h3>
-                    <p className="text-[10px] text-gray-500 font-semibold">{selectedLead.company}</p>
+                    <h3 className="font-extrabold text-sm text-slate-900">{selectedLead.name}</h3>
+                    <p className="text-[10px] text-slate-500 font-bold">{selectedLead.company}</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-1">
@@ -284,14 +285,14 @@ export const Leads: React.FC = () => {
                       setEditLeadData(selectedLead);
                       setShowEditModal(true);
                     }}
-                    className="p-1 text-gray-400 hover:text-emerald-600 rounded-lg hover:bg-gray-100"
+                    className="p-1.5 text-slate-400 hover:text-emerald-600 rounded-xl hover:bg-slate-100 cursor-pointer"
                     title="Edit Lead"
                   >
                     <span className="material-symbols-outlined text-base">edit</span>
                   </button>
                   <button
                     onClick={() => setSelectedLead(null)}
-                    className="p-1 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-100"
+                    className="p-1.5 text-slate-400 hover:text-slate-600 rounded-xl hover:bg-slate-100 cursor-pointer"
                   >
                     <span className="material-symbols-outlined text-base">close</span>
                   </button>
@@ -299,25 +300,25 @@ export const Leads: React.FC = () => {
               </div>
 
               {/* Lead Details */}
-              <div className="space-y-3 text-xs">
-                <div className="flex justify-between items-center bg-gray-50 p-3 rounded-lg border border-gray-200">
+              <div className="space-y-3.5 text-xs">
+                <div className="flex justify-between items-center bg-slate-50 p-4 rounded-2xl border border-slate-200/80">
                   <div>
-                    <span className="text-[10px] text-gray-400 block font-semibold">LEAD SCORE</span>
-                    <span className="font-bold text-lg text-emerald-600">{selectedLead.leadScore} / 100</span>
+                    <span className="text-[10px] text-slate-400 block font-extrabold uppercase tracking-wider">AI LEAD SCORE</span>
+                    <span className="font-extrabold text-xl text-emerald-600">{selectedLead.leadScore} / 100</span>
                   </div>
                   <button
                     onClick={() => convertLeadToContact(selectedLead.id)}
-                    className="px-2.5 py-1 bg-emerald-100 text-emerald-700 font-bold rounded text-[10px] hover:bg-emerald-200"
+                    className="px-3 py-1.5 bg-emerald-600 text-white font-bold rounded-xl text-[10px] hover:bg-emerald-500 transition-all shadow-xs cursor-pointer"
                   >
-                    + Convert to Contact
+                    + Convert Contact
                   </button>
                 </div>
 
                 <div>
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-gray-400 block mb-1">Score Breakdown</span>
-                  <div className="space-y-1.5 bg-gray-50 p-3 rounded-lg border border-gray-200 text-[11px]">
+                  <span className="text-[10px] font-extrabold uppercase tracking-wider text-slate-400 block mb-1.5">Score Breakdown</span>
+                  <div className="space-y-1.5 bg-slate-50/80 p-3.5 rounded-2xl border border-slate-200/80 text-[11px]">
                     {selectedLead.scoreBreakdown?.map((sb, idx) => (
-                      <div key={idx} className="flex justify-between text-gray-700">
+                      <div key={idx} className="flex justify-between text-slate-700 font-semibold">
                         <span>{sb.label}</span>
                         <span className="font-bold text-emerald-600">+{sb.points} pts</span>
                       </div>
@@ -326,27 +327,27 @@ export const Leads: React.FC = () => {
                 </div>
 
                 <div className="grid grid-cols-2 gap-3 pt-2">
-                  <div>
-                    <span className="text-[10px] text-gray-400 block font-semibold">Email</span>
-                    <span className="font-medium text-[#191c1e]">{selectedLead.email}</span>
+                  <div className="bg-slate-50 p-3 rounded-xl border border-slate-100">
+                    <span className="text-[10px] text-slate-400 block font-extrabold uppercase">Email</span>
+                    <span className="font-bold text-slate-900 truncate block">{selectedLead.email}</span>
                   </div>
-                  <div>
-                    <span className="text-[10px] text-gray-400 block font-semibold">Phone</span>
-                    <span className="font-medium text-[#191c1e]">{selectedLead.phone}</span>
+                  <div className="bg-slate-50 p-3 rounded-xl border border-slate-100">
+                    <span className="text-[10px] text-slate-400 block font-extrabold uppercase">Phone</span>
+                    <span className="font-bold text-slate-900 truncate block">{selectedLead.phone}</span>
                   </div>
                 </div>
 
-                <div>
-                  <span className="text-[10px] text-gray-400 block font-semibold">Assigned Rep</span>
-                  <span className="font-medium text-[#191c1e]">{selectedLead.assignedTo}</span>
+                <div className="bg-slate-50 p-3 rounded-xl border border-slate-100">
+                  <span className="text-[10px] text-slate-400 block font-extrabold uppercase">Assigned Rep</span>
+                  <span className="font-bold text-slate-900">{selectedLead.assignedTo}</span>
                 </div>
               </div>
             </div>
 
-            <div className="border-t border-gray-100 pt-4 flex gap-2">
+            <div className="border-t border-slate-100 pt-4">
               <button
                 onClick={() => handleDelete(selectedLead.id)}
-                className="w-full py-2 bg-red-50 text-red-600 font-bold text-xs rounded-lg hover:bg-red-100 transition-colors"
+                className="w-full py-2.5 bg-rose-50 hover:bg-rose-100 text-rose-600 font-bold text-xs rounded-xl transition-colors cursor-pointer border border-rose-200/50"
               >
                 Delete Lead
               </button>
@@ -357,59 +358,59 @@ export const Leads: React.FC = () => {
 
       {/* Add Lead Modal */}
       {showAddModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-xl max-w-md w-full p-6 space-y-4 animate-fade-in shadow-2xl">
-            <h3 className="font-bold text-lg text-[#191c1e]">Add New Lead</h3>
-            <form onSubmit={handleAddSubmit} className="space-y-3 text-xs">
+        <div className="fixed inset-0 bg-slate-950/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-3xl max-w-md w-full p-6 space-y-4 animate-fade-in shadow-2xl border border-slate-200">
+            <h3 className="font-extrabold text-lg text-slate-900">Add New Lead</h3>
+            <form onSubmit={handleAddSubmit} className="space-y-3.5 text-xs">
               <div>
-                <label className="font-bold text-gray-600 block mb-1">Full Name *</label>
+                <label className="font-bold text-slate-700 block mb-1">Full Name *</label>
                 <input
                   type="text"
                   required
                   value={newLeadData.name}
                   onChange={(e) => setNewLeadData({ ...newLeadData, name: e.target.value })}
-                  className="w-full p-2 border border-gray-300 rounded-lg focus:border-emerald-500 focus:outline-none"
+                  className="w-full p-2.5 border border-slate-300 rounded-xl focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/10 focus:outline-none text-slate-900 font-medium"
                 />
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="font-bold text-gray-600 block mb-1">Email</label>
+                  <label className="font-bold text-slate-700 block mb-1">Email</label>
                   <input
                     type="email"
                     value={newLeadData.email}
                     onChange={(e) => setNewLeadData({ ...newLeadData, email: e.target.value })}
-                    className="w-full p-2 border border-gray-300 rounded-lg focus:border-emerald-500 focus:outline-none"
+                    className="w-full p-2.5 border border-slate-300 rounded-xl focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/10 focus:outline-none text-slate-900 font-medium"
                   />
                 </div>
                 <div>
-                  <label className="font-bold text-gray-600 block mb-1">Phone *</label>
+                  <label className="font-bold text-slate-700 block mb-1">Phone *</label>
                   <input
                     type="text"
                     required
                     value={newLeadData.phone}
                     onChange={(e) => setNewLeadData({ ...newLeadData, phone: e.target.value })}
-                    className="w-full p-2 border border-gray-300 rounded-lg focus:border-emerald-500 focus:outline-none"
+                    className="w-full p-2.5 border border-slate-300 rounded-xl focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/10 focus:outline-none text-slate-900 font-medium"
                   />
                 </div>
               </div>
               <div>
-                <label className="font-bold text-gray-600 block mb-1">Company</label>
+                <label className="font-bold text-slate-700 block mb-1">Company</label>
                 <input
                   type="text"
                   value={newLeadData.company}
                   onChange={(e) => setNewLeadData({ ...newLeadData, company: e.target.value })}
-                  className="w-full p-2 border border-gray-300 rounded-lg focus:border-emerald-500 focus:outline-none"
+                  className="w-full p-2.5 border border-slate-300 rounded-xl focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/10 focus:outline-none text-slate-900 font-medium"
                 />
               </div>
-              <div className="flex justify-end gap-2 pt-3">
+              <div className="flex justify-end gap-2.5 pt-3">
                 <button
                   type="button"
                   onClick={() => setShowAddModal(false)}
-                  className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg font-bold"
+                  className="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl font-bold transition-colors cursor-pointer"
                 >
                   Cancel
                 </button>
-                <button type="submit" className="px-4 py-2 bg-[#22c55e] text-white rounded-lg font-bold hover:bg-emerald-600">
+                <button type="submit" className="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl font-bold transition-all shadow-md shadow-emerald-600/20 cursor-pointer">
                   Save Lead
                 </button>
               </div>
@@ -420,37 +421,37 @@ export const Leads: React.FC = () => {
 
       {/* Edit Lead Modal */}
       {showEditModal && selectedLead && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-xl max-w-md w-full p-6 space-y-4 animate-fade-in shadow-2xl">
-            <h3 className="font-bold text-lg text-[#191c1e]">Edit Lead</h3>
-            <form onSubmit={handleEditSubmit} className="space-y-3 text-xs">
+        <div className="fixed inset-0 bg-slate-950/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-3xl max-w-md w-full p-6 space-y-4 animate-fade-in shadow-2xl border border-slate-200">
+            <h3 className="font-extrabold text-lg text-slate-900">Edit Lead</h3>
+            <form onSubmit={handleEditSubmit} className="space-y-3.5 text-xs">
               <div>
-                <label className="font-bold text-gray-600 block mb-1">Full Name</label>
+                <label className="font-bold text-slate-700 block mb-1">Full Name</label>
                 <input
                   type="text"
                   value={editLeadData.name || ''}
                   onChange={(e) => setEditLeadData({ ...editLeadData, name: e.target.value })}
-                  className="w-full p-2 border border-gray-300 rounded-lg focus:border-emerald-500 focus:outline-none"
+                  className="w-full p-2.5 border border-slate-300 rounded-xl focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/10 focus:outline-none text-slate-900 font-medium"
                 />
               </div>
               <div>
-                <label className="font-bold text-gray-600 block mb-1">Email</label>
+                <label className="font-bold text-slate-700 block mb-1">Email</label>
                 <input
                   type="email"
                   value={editLeadData.email || ''}
                   onChange={(e) => setEditLeadData({ ...editLeadData, email: e.target.value })}
-                  className="w-full p-2 border border-gray-300 rounded-lg focus:border-emerald-500 focus:outline-none"
+                  className="w-full p-2.5 border border-slate-300 rounded-xl focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/10 focus:outline-none text-slate-900 font-medium"
                 />
               </div>
-              <div className="flex justify-end gap-2 pt-3">
+              <div className="flex justify-end gap-2.5 pt-3">
                 <button
                   type="button"
                   onClick={() => setShowEditModal(false)}
-                  className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg font-bold"
+                  className="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl font-bold transition-colors cursor-pointer"
                 >
                   Cancel
                 </button>
-                <button type="submit" className="px-4 py-2 bg-[#22c55e] text-white rounded-lg font-bold hover:bg-emerald-600">
+                <button type="submit" className="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl font-bold transition-all shadow-md shadow-emerald-600/20 cursor-pointer">
                   Update Lead
                 </button>
               </div>

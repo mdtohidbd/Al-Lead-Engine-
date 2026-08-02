@@ -7,7 +7,7 @@ export const TestChat: React.FC = () => {
   const [messages, setMessages] = useState<Array<{ sender: 'user' | 'ai'; text: string; time: string }>>([
     {
       sender: 'ai',
-      text: "Hello! I'm your GreenLead AI agent. I'll automatically score your answers against your active qualification rules. What is your company size and timeline?",
+      text: "Hello! I'm your GreenLead AI agent. I'll automatically score your answers against your active qualification rules. What is your company size and purchasing timeline?",
       time: 'Just now',
     },
   ]);
@@ -60,61 +60,61 @@ export const TestChat: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col lg:flex-row gap-6 w-full max-w-5xl mx-auto h-[calc(100vh-8rem)] relative animate-fade-in">
+    <div className="flex flex-col lg:flex-row gap-6 w-full max-w-6xl mx-auto h-[calc(100vh-9rem)] relative animate-fade-in pb-4">
       {/* Left Chat Container */}
-      <div className="flex-1 flex flex-col bg-white rounded-xl border border-gray-200/80 shadow-sm overflow-hidden">
+      <div className="flex-1 flex flex-col glass-card rounded-3xl border border-slate-200/80 shadow-xs overflow-hidden">
         {/* Header */}
-        <div className="p-4 bg-gray-50 border-b border-gray-200 flex items-center justify-between">
+        <div className="p-4 bg-gradient-to-r from-slate-900 to-slate-800 text-white border-b border-slate-800 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-full bg-emerald-100 text-emerald-800 font-bold flex items-center justify-center">
+            <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 text-white font-extrabold flex items-center justify-center shadow-md shadow-emerald-500/30">
               <span className="material-symbols-outlined text-xl">smart_toy</span>
             </div>
             <div>
-              <h2 className="font-bold text-sm text-[#151c27]">AI Lead Agent Simulator</h2>
-              <p className="text-[10px] text-gray-500">Model: {settings.model} &bull; Threshold: {hotThreshold} pts</p>
+              <h2 className="font-extrabold text-sm text-white">AI Lead Agent Simulator</h2>
+              <p className="text-[10px] text-slate-400 font-medium">Model: <span className="text-emerald-400 font-bold">{settings.model}</span> &bull; Hot Threshold: <span className="text-emerald-400 font-bold">{hotThreshold} pts</span></p>
             </div>
           </div>
           <button
             onClick={handleReset}
-            className="px-3 py-1.5 bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold text-xs rounded-lg transition-colors"
+            className="px-3.5 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white font-bold text-xs rounded-xl border border-slate-700 transition-all cursor-pointer"
           >
             Reset Sandbox
           </button>
         </div>
 
         {/* Chat History */}
-        <div className="flex-1 p-4 overflow-y-auto space-y-3 bg-[#f8f9fb]">
+        <div className="flex-1 p-5 overflow-y-auto space-y-4 bg-slate-50/50 custom-scrollbar">
           {messages.map((m, i) => (
             <div key={i} className={`flex flex-col ${m.sender === 'user' ? 'items-end' : 'items-start'}`}>
               <div
-                className={`max-w-md p-3 rounded-xl text-xs leading-relaxed shadow-sm ${
+                className={`max-w-md p-3.5 rounded-2xl text-xs leading-relaxed shadow-xs ${
                   m.sender === 'user'
-                    ? 'bg-[#22c55e] text-white rounded-tr-none font-medium'
-                    : 'bg-white border border-gray-200 text-[#151c27] rounded-tl-none'
+                    ? 'bg-gradient-to-r from-emerald-600 to-teal-600 text-white rounded-tr-none font-medium shadow-md shadow-emerald-600/15'
+                    : 'bg-white border border-slate-200/90 text-slate-900 rounded-tl-none font-medium'
                 }`}
               >
                 {m.text}
               </div>
-              <span className="text-[9px] text-gray-400 mt-1 px-1">{m.time}</span>
+              <span className="text-[9px] font-bold text-slate-400 mt-1 px-1">{m.time}</span>
             </div>
           ))}
 
           {isThinking && (
-            <div className="flex items-center gap-2 text-xs text-gray-400 p-2">
+            <div className="flex items-center gap-2 text-xs text-slate-500 p-2 bg-white/60 rounded-xl border border-slate-200/60 w-fit animate-pulse">
               <span className="material-symbols-outlined text-sm animate-spin text-emerald-600">sync</span>
               Evaluating qualification rules...
             </div>
           )}
         </div>
 
-        {/* Input */}
-        <div className="p-3 bg-white border-t border-gray-200 space-y-2">
-          <div className="flex gap-2 overflow-x-auto pb-1">
+        {/* Input & Prompt Suggestion Chips */}
+        <div className="p-4 bg-white border-t border-slate-200/80 space-y-3">
+          <div className="flex gap-2 overflow-x-auto pb-1 custom-scrollbar">
             {['We have 500+ employees', 'Yes, I am the buyer', 'Need deployment this month'].map((suggestion) => (
               <button
                 key={suggestion}
                 onClick={() => sendMessage(suggestion)}
-                className="px-2.5 py-1 bg-gray-100 hover:bg-gray-200 text-gray-700 text-[10px] font-bold rounded-full whitespace-nowrap"
+                className="px-3 py-1.5 bg-slate-100 hover:bg-emerald-50 hover:text-emerald-700 hover:border-emerald-300 text-slate-700 text-[10px] font-extrabold rounded-xl border border-slate-200 whitespace-nowrap transition-all cursor-pointer"
               >
                 + {suggestion}
               </button>
@@ -127,12 +127,13 @@ export const TestChat: React.FC = () => {
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && sendMessage()}
-              className="flex-1 bg-gray-50 border border-gray-200 rounded-xl px-4 py-2 text-xs focus:outline-none focus:border-[#22c55e]"
+              className="flex-1 bg-slate-50 border border-slate-300/80 rounded-xl px-4 py-2.5 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/10 font-medium"
             />
             <button
               onClick={() => sendMessage()}
-              className="px-4 py-2 bg-[#22c55e] text-white font-bold text-xs rounded-xl hover:bg-emerald-600"
+              className="px-5 py-2.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold text-xs rounded-xl shadow-md shadow-emerald-600/20 transition-all cursor-pointer hover-lift border border-emerald-400/20 flex items-center gap-1"
             >
+              <span className="material-symbols-outlined text-base">send</span>
               Send
             </button>
           </div>
@@ -140,22 +141,22 @@ export const TestChat: React.FC = () => {
       </div>
 
       {/* Right Qualification Meter Side Panel */}
-      <div className="w-full lg:w-72 bg-white rounded-xl border border-gray-200/80 shadow-sm p-5 space-y-6 flex flex-col justify-between">
+      <div className="w-full lg:w-80 glass-card rounded-3xl border border-slate-200/80 shadow-xs p-6 space-y-6 flex flex-col justify-between">
         <div>
-          <h3 className="font-bold text-xs text-gray-400 uppercase tracking-wider mb-4">Live Qualification Score</h3>
+          <h3 className="font-extrabold text-[11px] text-slate-400 uppercase tracking-widest mb-4">Live Qualification Meter</h3>
 
-          <div className="text-center space-y-2 bg-gray-50 p-4 rounded-xl border border-gray-200">
-            <div className="text-4xl font-extrabold text-emerald-600">{simulatedScore}</div>
-            <div className="text-[10px] font-bold uppercase tracking-wider text-gray-500">Current Lead Rating</div>
-            <div className="w-full bg-gray-200 h-2 rounded-full overflow-hidden">
+          <div className="text-center space-y-3 bg-gradient-to-b from-slate-50 to-white p-5 rounded-2xl border border-slate-200/80 shadow-xs">
+            <div className="text-4xl font-extrabold text-emerald-600 tracking-tight">{simulatedScore}</div>
+            <div className="text-[10px] font-extrabold uppercase tracking-wider text-slate-500">Current Lead Rating</div>
+            <div className="w-full bg-slate-200 h-2.5 rounded-full overflow-hidden">
               <div
-                className={`h-full transition-all duration-500 ${
-                  simulatedScore >= hotThreshold ? 'bg-emerald-500' : 'bg-amber-500'
+                className={`h-full transition-all duration-500 rounded-full ${
+                  simulatedScore >= hotThreshold ? 'bg-gradient-to-r from-emerald-500 to-teal-400 shadow-sm' : 'bg-gradient-to-r from-amber-500 to-amber-400'
                 }`}
                 style={{ width: `${simulatedScore}%` }}
               ></div>
             </div>
-            <div className="text-[10px] text-gray-400 flex justify-between">
+            <div className="text-[10px] text-slate-400 font-bold flex justify-between">
               <span>0</span>
               <span>Target: {hotThreshold} pts</span>
               <span>100</span>
@@ -163,13 +164,13 @@ export const TestChat: React.FC = () => {
           </div>
 
           <div className="mt-6 space-y-3 text-xs">
-            <div className="flex justify-between items-center text-gray-600">
-              <span>Hot Threshold</span>
-              <span className="font-bold text-emerald-600">{hotThreshold} pts</span>
+            <div className="flex justify-between items-center bg-slate-50 p-3 rounded-xl border border-slate-100">
+              <span className="font-semibold text-slate-600">Hot Threshold</span>
+              <span className="font-extrabold text-emerald-600">{hotThreshold} pts</span>
             </div>
-            <div className="flex justify-between items-center text-gray-600">
-              <span>Routing Decision</span>
-              <span className="font-bold text-[#151c27]">
+            <div className="flex justify-between items-center bg-slate-50 p-3 rounded-xl border border-slate-100">
+              <span className="font-semibold text-slate-600">Routing Decision</span>
+              <span className="font-extrabold text-slate-900">
                 {simulatedScore >= hotThreshold ? 'VIP Sales Routing' : 'Nurture Sequence'}
               </span>
             </div>
@@ -179,4 +180,3 @@ export const TestChat: React.FC = () => {
     </div>
   );
 };
-

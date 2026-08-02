@@ -6,14 +6,13 @@ export const Dashboard: React.FC = () => {
   const { leads, conversations, hotThreshold } = useCRM();
 
   const hotLeads = leads.filter((l) => l.status === 'Hot' || l.leadScore >= hotThreshold);
-  const totalLeads = leads.length;
 
   const [pipelineView, setPipelineView] = useState<'Daily' | 'Quarterly'>('Quarterly');
   const [checklist, setChecklist] = useState([
-    { id: 'c1', label: 'Company Profile', completed: true },
-    { id: 'c2', label: 'WhatsApp Token', completed: true },
-    { id: 'c3', label: 'Load Past Messages', completed: false },
-    { id: 'c4', label: 'Team Notifications', completed: false },
+    { id: 'c1', label: 'Company Profile & AI Persona', completed: true },
+    { id: 'c2', label: 'WhatsApp API Integration', completed: true },
+    { id: 'c3', label: 'Sync Historical Contacts', completed: false },
+    { id: 'c4', label: 'Configure Lead Scoring Rules', completed: false },
   ]);
 
   const toggleCheck = (id: string) => {
@@ -26,91 +25,127 @@ export const Dashboard: React.FC = () => {
   const checklistPercent = Math.round((completedCount / checklist.length) * 100);
 
   return (
-    <div className="flex flex-col space-y-8 animate-fade-in">
-      {/* Top Banner & Stats Row */}
+    <div className="flex flex-col space-y-8 animate-fade-in pb-8">
+      {/* Top Welcome Header */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 text-white p-6 rounded-3xl shadow-xl border border-slate-700/60 relative overflow-hidden">
+        <div className="absolute top-0 right-0 -mt-10 -mr-10 w-48 h-48 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
+        <div className="relative z-10">
+          <div className="flex items-center gap-2 mb-1">
+            <span className="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+              Live AI Pipeline
+            </span>
+          </div>
+          <h1 className="text-2xl md:text-3xl font-extrabold text-white tracking-tight">
+            Lead Engine Overview
+          </h1>
+          <p className="text-xs text-slate-300 mt-1 max-w-xl">
+            Real-time lead qualification, automated engagement triggers, and live CRM performance analytics.
+          </p>
+        </div>
+        <div className="relative z-10 flex items-center gap-3">
+          <Link
+            to="/qualification"
+            className="px-4 py-2.5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 rounded-xl text-xs font-bold transition-all shadow-md shadow-emerald-500/20 hover:scale-105 flex items-center gap-2"
+          >
+            <span className="material-symbols-outlined text-base">psychology</span>
+            Configure AI Rules
+          </Link>
+        </div>
+      </div>
+
+      {/* Stats Row */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {/* Total Leads */}
-        <div className="bg-white p-6 rounded-2xl border border-gray-200/80 shadow-sm flex flex-col justify-between group hover:shadow-md transition-all">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-xs font-bold uppercase tracking-wider text-gray-500">Total Leads</span>
-            <div className="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center group-hover:scale-110 transition-transform">
+        <div className="glass-card p-6 rounded-2xl border border-slate-200/80 shadow-xs flex flex-col justify-between hover-lift group">
+          <div className="flex items-center justify-between mb-3">
+            <span className="text-xs font-bold uppercase tracking-wider text-slate-500">Total Leads</span>
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500/15 to-emerald-600/5 text-emerald-600 border border-emerald-500/20 flex items-center justify-center group-hover:scale-110 transition-transform">
               <span className="material-symbols-outlined text-xl">groups</span>
             </div>
           </div>
-          <div className="flex items-baseline gap-2">
-            <h2 className="text-3xl font-bold text-[#151c27]">2,842</h2>
-            <span className="text-xs font-bold text-emerald-600 flex items-center">
+          <div className="flex items-baseline gap-2.5">
+            <h2 className="text-3xl font-extrabold text-slate-900 tracking-tight">2,842</h2>
+            <span className="text-xs font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200/60 flex items-center gap-0.5">
               <span className="material-symbols-outlined text-sm">trending_up</span> +12%
             </span>
           </div>
+          <p className="text-[11px] text-slate-500 mt-2 font-medium">182 new entries this week</p>
         </div>
 
         {/* Hot Leads */}
-        <div className="bg-white p-6 rounded-2xl border border-gray-200/80 shadow-sm flex flex-col justify-between group hover:shadow-md transition-all">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-xs font-bold uppercase tracking-wider text-gray-500">Hot Leads</span>
-            <div className="w-10 h-10 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center group-hover:scale-110 transition-transform">
+        <div className="glass-card p-6 rounded-2xl border border-slate-200/80 shadow-xs flex flex-col justify-between hover-lift group">
+          <div className="flex items-center justify-between mb-3">
+            <span className="text-xs font-bold uppercase tracking-wider text-slate-500">Hot Leads</span>
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-500/15 to-amber-600/5 text-amber-600 border border-amber-500/20 flex items-center justify-center group-hover:scale-110 transition-transform">
               <span className="material-symbols-outlined text-xl">local_fire_department</span>
             </div>
           </div>
-          <div className="flex items-baseline gap-2">
-            <h2 className="text-3xl font-bold text-[#151c27]">156</h2>
-            <span className="text-xs font-bold text-emerald-600 flex items-center">
+          <div className="flex items-baseline gap-2.5">
+            <h2 className="text-3xl font-extrabold text-slate-900 tracking-tight">156</h2>
+            <span className="text-xs font-bold text-amber-600 bg-amber-50 px-2 py-0.5 rounded-full border border-amber-200/60 flex items-center gap-0.5">
               <span className="material-symbols-outlined text-sm">trending_up</span> +5%
             </span>
           </div>
+          <p className="text-[11px] text-slate-500 mt-2 font-medium">Requires immediate follow-up</p>
         </div>
 
         {/* Messages Today */}
-        <div className="bg-white p-6 rounded-2xl border border-gray-200/80 shadow-sm flex flex-col justify-between group hover:shadow-md transition-all">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-xs font-bold uppercase tracking-wider text-gray-500">Messages Today</span>
-            <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center group-hover:scale-110 transition-transform">
+        <div className="glass-card p-6 rounded-2xl border border-slate-200/80 shadow-xs flex flex-col justify-between hover-lift group">
+          <div className="flex items-center justify-between mb-3">
+            <span className="text-xs font-bold uppercase tracking-wider text-slate-500">Messages Today</span>
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500/15 to-blue-600/5 text-blue-600 border border-blue-500/20 flex items-center justify-center group-hover:scale-110 transition-transform">
               <span className="material-symbols-outlined text-xl">chat_bubble</span>
             </div>
           </div>
-          <div className="flex items-baseline gap-2">
-            <h2 className="text-3xl font-bold text-[#151c27]">12.4k</h2>
-            <span className="text-xs text-gray-400">Goal: 15k</span>
+          <div className="flex items-baseline gap-2.5">
+            <h2 className="text-3xl font-extrabold text-slate-900 tracking-tight">12.4k</h2>
+            <span className="text-xs font-semibold text-slate-500">Goal: 15k</span>
+          </div>
+          <div className="w-full bg-slate-100 h-1.5 rounded-full mt-3 overflow-hidden">
+            <div className="bg-blue-500 h-full rounded-full" style={{ width: '82%' }}></div>
           </div>
         </div>
 
         {/* Active Convos */}
-        <div className="bg-white p-6 rounded-2xl border border-gray-200/80 shadow-sm flex flex-col justify-between group hover:shadow-md transition-all">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-xs font-bold uppercase tracking-wider text-gray-500">Active Convos</span>
-            <div className="w-10 h-10 rounded-xl bg-emerald-50 text-primary flex items-center justify-center group-hover:scale-110 transition-transform">
+        <div className="glass-card p-6 rounded-2xl border border-slate-200/80 shadow-xs flex flex-col justify-between hover-lift group">
+          <div className="flex items-center justify-between mb-3">
+            <span className="text-xs font-bold uppercase tracking-wider text-slate-500">Active Convos</span>
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-teal-500/15 to-teal-600/5 text-teal-600 border border-teal-500/20 flex items-center justify-center group-hover:scale-110 transition-transform">
               <span className="material-symbols-outlined text-xl">forum</span>
             </div>
           </div>
           <div className="flex items-baseline gap-2 justify-between">
-            <h2 className="text-3xl font-bold text-[#151c27]">{conversations.length * 241}</h2>
+            <h2 className="text-3xl font-extrabold text-slate-900 tracking-tight">{conversations.length * 241}</h2>
             <div className="flex items-center -space-x-2">
-              <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=80" alt="Avatar" className="w-6 h-6 rounded-full border-2 border-white object-cover" />
-              <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80" alt="Avatar" className="w-6 h-6 rounded-full border-2 border-white object-cover" />
-              <span className="w-6 h-6 rounded-full bg-gray-100 text-gray-700 text-[9px] font-bold border-2 border-white flex items-center justify-center">+12</span>
+              <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=80" alt="Avatar" className="w-7 h-7 rounded-full border-2 border-white object-cover shadow-xs" />
+              <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80" alt="Avatar" className="w-7 h-7 rounded-full border-2 border-white object-cover shadow-xs" />
+              <span className="w-7 h-7 rounded-full bg-slate-800 text-emerald-400 text-[10px] font-bold border-2 border-white flex items-center justify-center shadow-xs">+12</span>
             </div>
           </div>
+          <p className="text-[11px] text-slate-500 mt-2 font-medium">99.4% AI response rate</p>
         </div>
       </div>
 
       {/* Lead Pipeline Funnel Stepper */}
-      <div className="bg-white p-8 rounded-2xl border border-gray-200/80 shadow-sm space-y-6">
-        <div className="flex items-center justify-between">
-          <h3 className="text-lg font-bold text-[#151c27]">Lead Pipeline Funnel</h3>
-          <div className="flex gap-2 bg-gray-100 p-1 rounded-xl">
+      <div className="glass-card p-7 rounded-3xl border border-slate-200/80 shadow-xs space-y-6">
+        <div className="flex items-center justify-between flex-wrap gap-4">
+          <div>
+            <h3 className="text-lg font-extrabold text-slate-900 tracking-tight">Lead Pipeline Funnel</h3>
+            <p className="text-xs text-slate-500">Live breakdown of prospect movement across qualification stages.</p>
+          </div>
+          <div className="flex gap-1.5 bg-slate-100/80 p-1 rounded-xl border border-slate-200/60">
             <button
               onClick={() => setPipelineView('Daily')}
-              className={`px-3 py-1 text-xs font-semibold rounded-lg transition-colors ${
-                pipelineView === 'Daily' ? 'bg-white text-[#151c27] shadow-sm' : 'text-gray-500'
+              className={`px-3.5 py-1.5 text-xs font-bold rounded-lg transition-all ${
+                pipelineView === 'Daily' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500 hover:text-slate-800'
               }`}
             >
               Daily View
             </button>
             <button
               onClick={() => setPipelineView('Quarterly')}
-              className={`px-3 py-1 text-xs font-semibold rounded-lg transition-colors ${
-                pipelineView === 'Quarterly' ? 'bg-primary text-white shadow-sm' : 'text-gray-500'
+              className={`px-3.5 py-1.5 text-xs font-bold rounded-lg transition-all ${
+                pipelineView === 'Quarterly' ? 'bg-emerald-600 text-white shadow-md shadow-emerald-600/20' : 'text-slate-500 hover:text-slate-800'
               }`}
             >
               Quarterly
@@ -118,49 +153,49 @@ export const Dashboard: React.FC = () => {
           </div>
         </div>
 
-        <div className="flex flex-col lg:flex-row w-full gap-2 overflow-hidden rounded-2xl">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
           {/* New */}
-          <div className="flex-1 bg-gray-50 p-5 flex flex-col items-center gap-2 group hover:bg-gray-100 transition-colors border border-gray-200/60 rounded-xl">
-            <span className="text-xs font-bold text-gray-500 uppercase">New</span>
-            <span className="text-2xl font-bold text-[#151c27]">1,240</span>
-            <div className="h-1.5 w-full bg-gray-200 rounded-full overflow-hidden">
-              <div className="h-full bg-gray-400 w-full"></div>
+          <div className="bg-slate-50/80 p-5 flex flex-col items-center justify-between gap-3 group hover:bg-slate-100/90 transition-all border border-slate-200/80 rounded-2xl hover-lift">
+            <span className="text-[11px] font-extrabold text-slate-500 uppercase tracking-wider">New</span>
+            <span className="text-2xl font-extrabold text-slate-900">1,240</span>
+            <div className="h-2 w-full bg-slate-200 rounded-full overflow-hidden">
+              <div className="h-full bg-slate-400 w-full rounded-full"></div>
             </div>
           </div>
 
           {/* Qualifying */}
-          <div className="flex-1 bg-gray-50 p-5 flex flex-col items-center gap-2 group hover:bg-gray-100 transition-colors border border-gray-200/60 rounded-xl">
-            <span className="text-xs font-bold text-gray-500 uppercase">Qualifying</span>
-            <span className="text-2xl font-bold text-[#151c27]">842</span>
-            <div className="h-1.5 w-full bg-primary/20 rounded-full overflow-hidden">
-              <div className="h-full bg-primary/40 w-[65%]"></div>
+          <div className="bg-slate-50/80 p-5 flex flex-col items-center justify-between gap-3 group hover:bg-slate-100/90 transition-all border border-slate-200/80 rounded-2xl hover-lift">
+            <span className="text-[11px] font-extrabold text-slate-500 uppercase tracking-wider">Qualifying</span>
+            <span className="text-2xl font-extrabold text-slate-900">842</span>
+            <div className="h-2 w-full bg-slate-200 rounded-full overflow-hidden">
+              <div className="h-full bg-emerald-400 w-[65%] rounded-full"></div>
             </div>
           </div>
 
           {/* Qualified */}
-          <div className="flex-1 bg-gray-50 p-5 flex flex-col items-center gap-2 group hover:bg-gray-100 transition-colors border border-gray-200/60 rounded-xl">
-            <span className="text-xs font-bold text-gray-700 uppercase">Qualified</span>
-            <span className="text-2xl font-bold text-[#151c27]">415</span>
-            <div className="h-1.5 w-full bg-primary/20 rounded-full overflow-hidden">
-              <div className="h-full bg-primary/60 w-[40%]"></div>
+          <div className="bg-slate-50/80 p-5 flex flex-col items-center justify-between gap-3 group hover:bg-slate-100/90 transition-all border border-slate-200/80 rounded-2xl hover-lift">
+            <span className="text-[11px] font-extrabold text-slate-600 uppercase tracking-wider">Qualified</span>
+            <span className="text-2xl font-extrabold text-slate-900">415</span>
+            <div className="h-2 w-full bg-slate-200 rounded-full overflow-hidden">
+              <div className="h-full bg-emerald-500 w-[40%] rounded-full"></div>
             </div>
           </div>
 
           {/* Hot */}
-          <div className="flex-1 bg-primary/10 p-5 flex flex-col items-center gap-2 group hover:bg-primary/20 transition-colors border border-primary/20 rounded-xl">
-            <span className="text-xs font-bold text-primary uppercase">Hot</span>
-            <span className="text-2xl font-bold text-[#151c27]">156</span>
-            <div className="h-1.5 w-full bg-primary/30 rounded-full overflow-hidden">
-              <div className="h-full bg-primary w-[25%]"></div>
+          <div className="bg-amber-50/70 p-5 flex flex-col items-center justify-between gap-3 group hover:bg-amber-100/70 transition-all border border-amber-200/70 rounded-2xl hover-lift">
+            <span className="text-[11px] font-extrabold text-amber-700 uppercase tracking-wider">Hot</span>
+            <span className="text-2xl font-extrabold text-slate-900">156</span>
+            <div className="h-2 w-full bg-amber-200/80 rounded-full overflow-hidden">
+              <div className="h-full bg-amber-500 w-[25%] rounded-full"></div>
             </div>
           </div>
 
           {/* Closed */}
-          <div className="flex-1 bg-primary p-5 flex flex-col items-center gap-2 text-white rounded-xl shadow-md">
-            <span className="text-xs font-bold uppercase">Closed</span>
-            <span className="text-2xl font-bold">92</span>
-            <div className="h-1.5 w-full bg-white/30 rounded-full overflow-hidden">
-              <div className="h-full bg-white w-[15%]"></div>
+          <div className="bg-gradient-to-br from-emerald-600 to-teal-700 p-5 flex flex-col items-center justify-between gap-3 text-white rounded-2xl shadow-lg shadow-emerald-600/20 hover-lift">
+            <span className="text-[11px] font-extrabold uppercase tracking-wider text-emerald-100">Closed Won</span>
+            <span className="text-2xl font-extrabold text-white">92</span>
+            <div className="h-2 w-full bg-white/30 rounded-full overflow-hidden">
+              <div className="h-full bg-white w-[15%] rounded-full"></div>
             </div>
           </div>
         </div>
@@ -168,11 +203,16 @@ export const Dashboard: React.FC = () => {
 
       {/* Mid Content: Setup Checklist & Quick Actions */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-        {/* Setup Checklist (4 Cols) */}
-        <div className="lg:col-span-4 bg-white p-6 rounded-2xl border border-gray-200/80 shadow-sm flex flex-col justify-between space-y-6">
+        {/* Setup Checklist (5 Cols) */}
+        <div className="lg:col-span-5 glass-card p-6 rounded-3xl border border-slate-200/80 shadow-xs flex flex-col justify-between space-y-6">
           <div>
-            <h3 className="text-base font-bold text-[#151c27]">Setup Checklist</h3>
-            <p className="text-xs text-gray-500 mt-1">Complete these steps to maximize your AI conversion rate.</p>
+            <div className="flex items-center justify-between mb-1">
+              <h3 className="text-base font-extrabold text-slate-900">Engine Setup</h3>
+              <span className="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold bg-emerald-100 text-emerald-700">
+                {checklistPercent}% Complete
+              </span>
+            </div>
+            <p className="text-xs text-slate-500">Complete setup tasks to optimize AI conversion performance.</p>
           </div>
 
           <div className="space-y-3">
@@ -180,117 +220,124 @@ export const Dashboard: React.FC = () => {
               <div
                 key={item.id}
                 onClick={() => toggleCheck(item.id)}
-                className="flex items-center gap-3 cursor-pointer group p-2 hover:bg-gray-50 rounded-xl transition-colors"
+                className="flex items-center gap-3.5 cursor-pointer group p-3 hover:bg-slate-50/90 rounded-2xl border border-slate-100 transition-all hover:border-slate-200"
               >
                 <div
-                  className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold transition-all ${
-                    item.completed ? 'bg-primary text-white' : 'border-2 border-gray-300 text-transparent group-hover:border-primary'
+                  className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-extrabold transition-all ${
+                    item.completed ? 'bg-emerald-600 text-white shadow-sm shadow-emerald-600/30' : 'border-2 border-slate-300 text-transparent group-hover:border-emerald-500'
                   }`}
                 >
                   ✓
                 </div>
-                <span className={`text-xs font-semibold ${item.completed ? 'text-[#151c27]' : 'text-gray-500'}`}>
+                <span className={`text-xs font-bold ${item.completed ? 'text-slate-800 line-through/30' : 'text-slate-600'}`}>
                   {item.label}
                 </span>
               </div>
             ))}
           </div>
 
-          <div className="pt-4 border-t border-gray-100">
-            <div className="w-full bg-gray-100 rounded-full h-2 overflow-hidden mb-2">
-              <div className="bg-primary h-full rounded-full transition-all" style={{ width: `${checklistPercent}%` }}></div>
+          <div className="pt-4 border-t border-slate-100">
+            <div className="w-full bg-slate-100 rounded-full h-2 overflow-hidden mb-2">
+              <div className="bg-gradient-to-r from-emerald-500 to-teal-500 h-full rounded-full transition-all duration-500" style={{ width: `${checklistPercent}%` }}></div>
             </div>
-            <p className="text-[11px] font-bold text-gray-500">{checklistPercent}% Completed</p>
           </div>
         </div>
 
-        {/* Quick Actions (8 Cols) */}
-        <div className="lg:col-span-8 bg-white p-6 rounded-2xl border border-gray-200/80 shadow-sm flex flex-col justify-between">
-          <h3 className="text-base font-bold text-[#151c27] mb-4">Quick Actions</h3>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        {/* Quick Actions (7 Cols) */}
+        <div className="lg:col-span-7 glass-card p-6 rounded-3xl border border-slate-200/80 shadow-xs flex flex-col justify-between">
+          <h3 className="text-base font-extrabold text-slate-900 mb-4">Quick Actions</h3>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
             <Link
               to="/bulk-message"
-              className="flex flex-col items-center justify-center gap-3 p-6 bg-gray-50 hover:bg-[#f0f3ff] rounded-2xl border border-gray-200/60 hover:border-primary transition-all group"
+              className="flex flex-col items-center justify-center text-center gap-3 p-5 bg-slate-50/80 hover:bg-emerald-50/60 rounded-2xl border border-slate-200/70 hover:border-emerald-400/50 transition-all hover-lift group"
             >
-              <span className="material-symbols-outlined text-3xl text-primary group-hover:scale-110 transition-transform">
-                forward_to_inbox
-              </span>
-              <span className="text-xs font-bold text-[#151c27]">Send Bulk Message</span>
+              <div className="w-12 h-12 rounded-2xl bg-white shadow-xs border border-slate-200/80 flex items-center justify-center group-hover:scale-110 transition-transform">
+                <span className="material-symbols-outlined text-2xl text-emerald-600">
+                  forward_to_inbox
+                </span>
+              </div>
+              <span className="text-xs font-bold text-slate-800">Bulk Blast</span>
             </Link>
 
             <Link
               to="/templates"
-              className="flex flex-col items-center justify-center gap-3 p-6 bg-gray-50 hover:bg-[#f0f3ff] rounded-2xl border border-gray-200/60 hover:border-primary transition-all group"
+              className="flex flex-col items-center justify-center text-center gap-3 p-5 bg-slate-50/80 hover:bg-emerald-50/60 rounded-2xl border border-slate-200/70 hover:border-emerald-400/50 transition-all hover-lift group"
             >
-              <span className="material-symbols-outlined text-3xl text-primary group-hover:scale-110 transition-transform">
-                add_box
-              </span>
-              <span className="text-xs font-bold text-[#151c27]">New Template</span>
+              <div className="w-12 h-12 rounded-2xl bg-white shadow-xs border border-slate-200/80 flex items-center justify-center group-hover:scale-110 transition-transform">
+                <span className="material-symbols-outlined text-2xl text-emerald-600">
+                  add_box
+                </span>
+              </div>
+              <span className="text-xs font-bold text-slate-800">New Template</span>
             </Link>
 
             <Link
               to="/leads"
-              className="flex flex-col items-center justify-center gap-3 p-6 bg-gray-50 hover:bg-[#f0f3ff] rounded-2xl border border-gray-200/60 hover:border-primary transition-all group"
+              className="flex flex-col items-center justify-center text-center gap-3 p-5 bg-slate-50/80 hover:bg-amber-50/60 rounded-2xl border border-slate-200/70 hover:border-amber-400/50 transition-all hover-lift group"
             >
-              <span className="material-symbols-outlined text-3xl text-amber-500 group-hover:scale-110 transition-transform">
-                local_fire_department
-              </span>
-              <span className="text-xs font-bold text-[#151c27]">View Hot Leads</span>
+              <div className="w-12 h-12 rounded-2xl bg-white shadow-xs border border-slate-200/80 flex items-center justify-center group-hover:scale-110 transition-transform">
+                <span className="material-symbols-outlined text-2xl text-amber-500">
+                  local_fire_department
+                </span>
+              </div>
+              <span className="text-xs font-bold text-slate-800">Hot Leads</span>
             </Link>
 
             <Link
               to="/qualification"
-              className="flex flex-col items-center justify-center gap-3 p-6 bg-gray-50 hover:bg-[#f0f3ff] rounded-2xl border border-gray-200/60 hover:border-primary transition-all group"
+              className="flex flex-col items-center justify-center text-center gap-3 p-5 bg-slate-50/80 hover:bg-emerald-50/60 rounded-2xl border border-slate-200/70 hover:border-emerald-400/50 transition-all hover-lift group"
             >
-              <span className="material-symbols-outlined text-3xl text-primary group-hover:scale-110 transition-transform">
-                psychology
-              </span>
-              <span className="text-xs font-bold text-[#151c27]">Configure AI</span>
+              <div className="w-12 h-12 rounded-2xl bg-white shadow-xs border border-slate-200/80 flex items-center justify-center group-hover:scale-110 transition-transform">
+                <span className="material-symbols-outlined text-2xl text-emerald-600">
+                  psychology
+                </span>
+              </div>
+              <span className="text-xs font-bold text-slate-800">AI Prompt</span>
             </Link>
           </div>
 
           {/* System Engine Health Bar */}
-          <div className="mt-6 p-4 bg-[#f0f3ff] rounded-xl border border-primary/20 flex flex-wrap items-center justify-between text-xs font-semibold text-[#151c27]">
-            <span className="uppercase text-[10px] text-gray-500 font-bold">System Engines:</span>
-            <span className="flex items-center gap-1 text-emerald-700">
-              <span className="w-2 h-2 rounded-full bg-emerald-500"></span> Auto AI Reply
+          <div className="mt-6 p-4 bg-slate-900 text-white rounded-2xl flex flex-wrap items-center justify-between text-xs font-bold border border-slate-800 gap-2">
+            <span className="uppercase text-[10px] text-slate-400 tracking-wider">System Engines:</span>
+            <span className="flex items-center gap-1.5 text-emerald-400">
+              <span className="w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_6px_rgba(52,211,153,0.8)]"></span> Auto AI Bot
             </span>
-            <span className="flex items-center gap-1 text-emerald-700">
-              <span className="w-2 h-2 rounded-full bg-emerald-500"></span> Event Triggers
+            <span className="flex items-center gap-1.5 text-emerald-400">
+              <span className="w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_6px_rgba(52,211,153,0.8)]"></span> Event Triggers
             </span>
-            <span className="flex items-center gap-1 text-emerald-700">
-              <span className="w-2 h-2 rounded-full bg-emerald-500"></span> Scheduled Messages
-            </span>
-            <span className="flex items-center gap-1 text-emerald-700">
-              <span className="w-2 h-2 rounded-full bg-emerald-500"></span> Bulk Messaging
+            <span className="flex items-center gap-1.5 text-emerald-400">
+              <span className="w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_6px_rgba(52,211,153,0.8)]"></span> Cron Schedule
             </span>
           </div>
         </div>
       </div>
 
-      {/* Bottom Row: Recent Activity & Leads This Week Chart */}
+      {/* Bottom Row: Recent Activity & Leads Chart */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
         {/* Recent Leads Activity */}
-        <div className="lg:col-span-8 bg-white rounded-2xl border border-gray-200/80 shadow-sm p-6 space-y-4">
-          <div className="flex justify-between items-center border-b border-gray-100 pb-3">
-            <h3 className="text-base font-bold text-[#151c27]">Recent Activity</h3>
-            <Link to="/leads" className="text-xs text-primary font-bold hover:underline">
-              View All Leads &rarr;
+        <div className="lg:col-span-8 glass-card rounded-3xl border border-slate-200/80 shadow-xs p-6 space-y-4">
+          <div className="flex justify-between items-center border-b border-slate-100 pb-4">
+            <div>
+              <h3 className="text-base font-extrabold text-slate-900">Recent High-Priority Leads</h3>
+              <p className="text-xs text-slate-500">Leads with highest scoring activity today.</p>
+            </div>
+            <Link to="/leads" className="text-xs text-emerald-600 font-extrabold hover:underline flex items-center gap-1">
+              View All Leads <span className="material-symbols-outlined text-sm">arrow_forward</span>
             </Link>
           </div>
-          <div className="divide-y divide-gray-100">
+          <div className="divide-y divide-slate-100">
             {hotLeads.slice(0, 3).map((lead) => (
-              <div key={lead.id} className="py-3 flex items-center justify-between hover:bg-gray-50 rounded-xl px-2">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-primary/10 text-primary font-bold flex items-center justify-center">
+              <div key={lead.id} className="py-3.5 flex items-center justify-between hover:bg-slate-50/80 rounded-2xl px-3 transition-colors">
+                <div className="flex items-center gap-3.5">
+                  <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 text-white font-extrabold flex items-center justify-center shadow-md shadow-emerald-500/20">
                     {lead.name.charAt(0)}
                   </div>
                   <div>
-                    <h4 className="text-xs font-bold text-[#151c27]">{lead.name}</h4>
-                    <p className="text-[11px] text-gray-500">{lead.company} • {lead.lastActive}</p>
+                    <h4 className="text-xs font-bold text-slate-900">{lead.name}</h4>
+                    <p className="text-[11px] text-slate-500">{lead.company} • {lead.lastActive}</p>
                   </div>
                 </div>
-                <span className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-red-100 text-red-700">
+                <span className="px-3 py-1 rounded-full text-[10px] font-extrabold bg-amber-50 text-amber-700 border border-amber-200/70">
                   {lead.status} ({lead.leadScore} pts)
                 </span>
               </div>
@@ -299,14 +346,17 @@ export const Dashboard: React.FC = () => {
         </div>
 
         {/* Peak Volume Chart Box */}
-        <div className="lg:col-span-4 bg-white rounded-2xl border border-gray-200/80 shadow-sm p-6 flex flex-col justify-between">
+        <div className="lg:col-span-4 glass-card rounded-3xl border border-slate-200/80 shadow-xs p-6 flex flex-col justify-between">
           <div className="flex justify-between items-center mb-4">
-            <h3 className="text-base font-bold text-[#151c27]">Leads This Week</h3>
-            <span className="text-xs font-bold text-primary bg-emerald-50 px-2 py-0.5 rounded-full">+24%</span>
+            <div>
+              <h3 className="text-base font-extrabold text-slate-900">Weekly Acquisition</h3>
+              <p className="text-xs text-slate-500">Leads captured by AI</p>
+            </div>
+            <span className="text-xs font-extrabold text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200/60">+24%</span>
           </div>
 
-          {/* Bar Graph Simulation */}
-          <div className="flex items-end justify-between h-36 gap-2 pt-2">
+          {/* Bar Graph Visualizer */}
+          <div className="flex items-end justify-between h-36 gap-2 pt-2 px-1">
             {[
               { day: 'M', h: '40%' },
               { day: 'T', h: '65%' },
@@ -318,24 +368,24 @@ export const Dashboard: React.FC = () => {
             ].map((bar, idx) => (
               <div key={idx} className="flex-1 flex flex-col items-center gap-2">
                 <div
-                  className={`w-full rounded-t-lg transition-all ${
-                    bar.active ? 'bg-primary shadow-lg shadow-primary/30' : 'bg-gray-200 hover:bg-primary/40'
+                  className={`w-full rounded-t-xl transition-all ${
+                    bar.active ? 'bg-gradient-to-t from-emerald-600 to-teal-400 shadow-md shadow-emerald-500/30' : 'bg-slate-200 hover:bg-slate-300'
                   }`}
                   style={{ height: bar.h }}
                 ></div>
-                <span className={`text-[10px] font-bold ${bar.active ? 'text-primary' : 'text-gray-400'}`}>
+                <span className={`text-[10px] font-bold ${bar.active ? 'text-emerald-600' : 'text-slate-400'}`}>
                   {bar.day}
                 </span>
               </div>
             ))}
           </div>
 
-          <div className="mt-4 p-3 bg-gray-50 rounded-xl flex items-center justify-between border border-gray-100 text-xs">
+          <div className="mt-5 p-3.5 bg-slate-50 rounded-2xl flex items-center justify-between border border-slate-100 text-xs">
             <div>
-              <p className="text-[9px] uppercase font-bold text-gray-400">Peak Volume</p>
-              <p className="font-bold text-[#151c27]">Wed, 2 PM</p>
+              <p className="text-[9px] uppercase font-extrabold text-slate-400">Peak Volume</p>
+              <p className="font-extrabold text-slate-900">Wed, 2:00 PM</p>
             </div>
-            <span className="material-symbols-outlined text-primary">analytics</span>
+            <span className="material-symbols-outlined text-emerald-600 bg-emerald-100/80 p-2 rounded-xl">analytics</span>
           </div>
         </div>
       </div>
