@@ -1,15 +1,266 @@
+# =============================================================================
+# Skybridge Digital — Al-Lead-Verify-CRM
+# =============================================================================
 
+# =============================================================================
+# ENVIRONMENT & SECRETS  (never commit these)
+# =============================================================================
+.env
+.env.*
+!.env.example
+!.env.template
+*.pem
+*.key
+*.p12
+*.pfx
+
+# =============================================================================
+# NODE / NPM
+# =============================================================================
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+.pnp
+.pnp.js
+.yarn/cache
+.yarn/unplugged
+.yarn/build-state.yml
+.yarn/install-state.gz
+
+# =============================================================================
+# BUILD OUTPUT
+# =============================================================================
+dist/
+dist-ssr/
+build/
+out/
+*.tsbuildinfo
+.turbo/
+
+# =============================================================================
+# TYPESCRIPT
+# =============================================================================
+*.js.map
+*.d.ts.map
+
+# =============================================================================
+# VITE / FRONTEND
+# =============================================================================
+.vite/
+vite.config.ts.timestamp-*
+
+# =============================================================================
+# SUPABASE
+# =============================================================================
+supabase/.branches/
+supabase/.temp/
+supabase/functions/.cache/
+# Keep migrations, seed, and config tracked — exclude generated output only
+supabase/functions/*/dist/
+
+# =============================================================================
+# DOCKER
+# =============================================================================
+.dockerignore.local
+docker-compose.override.yml
+
+# =============================================================================
+# BACKEND
+# =============================================================================
+backend/dist/
+backend/build/
+backend/*.log
+backend/.env
+backend/.env.*
+!backend/.env.example
+
+# =============================================================================
+# LOGS & DIAGNOSTICS
+# =============================================================================
+logs/
+*.log
+*.log.*
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# =============================================================================
+# OS GENERATED
+# =============================================================================
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+$RECYCLE.BIN/
+
+# =============================================================================
+# EDITORS & IDEs
+# =============================================================================
+# VS Code — keep shared settings, exclude personal/local ones
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+!.vscode/launch.json
+!.vscode/tasks.json
+.vscode/*.code-snippets.local
+
+# JetBrains
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# Vim / Neovim
+*.swp
+*.swo
+*~
+.netrwhist
+Session.vim
+
+# Emacs
+*#
+.#*
+
+# Sublime Text
+*.sublime-workspace
+*.sublime-project
+
+# =============================================================================
+# AI & AGENTIC TOOLING  (auto-generated, personalized, or ephemeral)
+# =============================================================================
+
+# --- Antigravity / Google Gemini ---
+.gemini/
 AGENT.md
-CLAUDE.md
-.agent-mem/
+skills-lock.json
 
-# Auto-generated agent rules (personalized per developer)
+# --- Anthropic Claude / Claude Code ---
+CLAUDE.md
+.claude/
+.cline/
+.clineRules
+.clinerules
+
+# --- Cursor ---
+.cursor/
+.cursorrules
+.cursorignore
+
+# --- Windsurf / Codeium ---
+.windsurfrules
+.windsurf/
+.codeiumignore
+
+# --- GitHub Copilot ---
+.github/copilot-instructions.md
+
+# --- Aider ---
+.aider*
+.aiderignore
+.aider.conf.yml
+.aider.model.settings.yml
+.aider.model.metadata.json
+
+# --- Zed AI ---
+.zed/
+
+# --- Replit AI ---
+.replit
+replit.nix
+
+# --- Continue.dev ---
+.continue/
+
+# --- Tabnine ---
+.tabnine/
+.tabnine_root
+
+# --- Supermaven ---
+.supermaven/
+
+# --- CodeWhisperer / Amazon Q ---
+.aws/amazonq/
+
+# --- OpenHands / All-Hands-AI ---
+.openhands/
+.openhands_instructions
+
+# --- Mentat ---
+.mentat/
+
+# --- Devin ---
+.devin/
+
+# --- Agent memory & brain stores ---
+.agent/
+.agent-mem/
+.brainsync/
 .brainsync/agent-rules.md
 
-# Auto-generated AI agent exclusions
-.cursorrules
-.clineRules
-.agent/
-.windsurfrules
-.gemini/
-.cline/
+# --- GSD (Get Stuff Done) workflow tool ---
+# Keep: .planning/ (project context & roadmap), .agents/AGENTS.md (project rules)
+# Exclude: generated state, caches, manifests, and install artifacts
+.agents/gsd-file-manifest.json
+.agents/gsd-install-state.json
+.agents/gsd-install-state.json.bak
+.agents/.gsd-profile
+.agents/mcp_config.json
+
+# GSD phase working directories (auto-generated per phase run)
+.planning/phases/
+.planning/codebase/
+.planning/graphs/
+.planning/mempalace/
+.planning/STATE.md
+
+# GSD scratch / brain outputs
+.gemini/antigravity-ide/brain/
+.gemini/antigravity-ide/mcp/
+
+# --- MCP (Model Context Protocol) ---
+.mcp.json
+.mcp.json.bak
+mcp.json
+
+# --- LLM context / prompt caches ---
+*.context.md
+*.prompt.cache
+.llm-cache/
+llm_cache/
+
+# --- AI-generated scratch files ---
+scratch.cjs
+scratch.js
+scratch.ts
+scratch*.md
+
+# =============================================================================
+# TESTING
+# =============================================================================
+coverage/
+.nyc_output/
+*.lcov
+junit.xml
+test-results/
+playwright-report/
+playwright/.cache/
+.jest-cache/
+
+# =============================================================================
+# MISC
+# =============================================================================
+*.bak
+*.tmp
+*.temp
+*.orig
+.cache/
+tmp/
+temp/
