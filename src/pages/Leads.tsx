@@ -147,7 +147,7 @@ export const Leads: React.FC = () => {
           <div className="p-4 border-b border-slate-200/70 flex flex-wrap items-center justify-between gap-4 bg-slate-50/80 text-xs">
             <div className="flex items-center gap-2 flex-wrap">
               <span className="font-extrabold text-slate-400 uppercase text-[10px] tracking-wider mr-1">Filter Status:</span>
-              {['All', 'Hot', 'Warm', 'Cold', 'Qualified'].map((st) => (
+              {['All', 'New', 'Qualifying', 'Warm', 'Hot', 'Qualified', 'Cold', 'Closed'].map((st) => (
                 <button
                   key={st}
                   onClick={() => setFilterStatus(st)}
@@ -224,11 +224,13 @@ export const Leads: React.FC = () => {
                             : 'bg-blue-100 text-blue-800'
                         }`}
                       >
-                        <option value="Hot">Hot</option>
+                        <option value="New">New</option>
+                        <option value="Qualifying">Qualifying</option>
                         <option value="Warm">Warm</option>
-                        <option value="Cold">Cold</option>
+                        <option value="Hot">Hot</option>
                         <option value="Qualified">Qualified</option>
-                        <option value="Unqualified">Unqualified</option>
+                        <option value="Cold">Cold</option>
+                        <option value="Closed">Closed</option>
                       </select>
                     </td>
                     <td className="py-3.5 px-4">

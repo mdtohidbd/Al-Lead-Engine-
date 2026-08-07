@@ -18,16 +18,21 @@
 
 **Stack:** TypeScript · React + Tailwind
 
-## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Project Standards
+## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Active: `.`
 
-- convention in .gitignore
+- **convention in auth.js**
+- **convention in emiController.js**
+
+## Project Standards
+
+- convention in auth.js
+- convention in emiController.js
 - Extract repeated class patterns into components
 - Use responsive prefixes consistently (sm:, md:, lg:, xl:)
 - Don't use arbitrary values when a utility class exists
 - Use Suspense and Error Boundaries for async operations
 - Don't prop-drill more than 2 levels — use Context or state management
 - Use useMemo for expensive computations, useCallback for stable references
-- Enable strict mode in tsconfig.json
 
 ## Verified Best Practices
 

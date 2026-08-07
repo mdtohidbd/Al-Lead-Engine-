@@ -1,4 +1,4 @@
-export type LeadStatus = 'Hot' | 'Warm' | 'Cold' | 'Qualified' | 'Unqualified';
+export type LeadStatus = 'New' | 'Qualifying' | 'Warm' | 'Hot' | 'Qualified' | 'Cold' | 'Closed';
 
 export interface ScoreBreakdown {
   label: string;
