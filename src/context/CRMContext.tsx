@@ -1,4 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { supabase } from '../services/supabase';
+import * as api from '../services/api';
 import {
   Lead,
   LeadStatus,
@@ -19,6 +21,7 @@ interface SettingsType {
   apiKey: string;
   whatsappConnected: boolean;
   phoneNumber: string;
+  verifyToken: string;
 }
 
 export interface UserProfile {
@@ -53,8 +56,8 @@ interface CRMContextType {
   setHelpOpen: (open: boolean) => void;
 
   // Auth Functions
-  login: (email: string, pass: string) => boolean;
-  signup: (name: string, email: string, pass: string) => void;
+  login: (email: string, pass: string) => Promise<boolean>;
+  signup: (name: string, email: string, pass: string) => Promise<boolean>;
   logout: () => void;
   exportData: () => void;
 
@@ -85,316 +88,23 @@ interface CRMContextType {
 
 const CRMContext = createContext<CRMContextType | undefined>(undefined);
 
-const initialQuestions: QualificationQuestion[] = [
-  {
-    id: 'q-1',
-    fieldName: 'Company Size',
-    fieldType: 'Number Range',
-    hintText: 'e.g. How many employees work at your HQ?',
-    required: true,
-    weightPoints: 45,
-  },
-  {
-    id: 'q-2',
-    fieldName: 'Budget Authority',
-    fieldType: 'Boolean (Yes/No)',
-    hintText: 'Do you have signing authority for software purchases?',
-    required: true,
-    weightPoints: 30,
-  },
-  {
-    id: 'q-3',
-    fieldName: 'Purchase Timeline',
-    fieldType: 'Multiple Choice',
-    hintText: 'When do you plan to roll out this solution?',
-    required: false,
-    weightPoints: 15,
-  },
-  {
-    id: 'q-4',
-    fieldName: 'Current Solution',
-    fieldType: 'Text Input',
-    hintText: 'What tool are you currently using?',
-    required: false,
-    weightPoints: 10,
-  },
-];
-
-const initialLeads: Lead[] = [
-  {
-    id: 'lead-101',
-    name: 'Sarah Jenkins',
-    email: 's.jenkins@acmecorp.com',
-    phone: '+1 (555) 234-5678',
-    company: 'Acme Corp',
-    companySize: '500+',
-    budgetAuthority: true,
-    status: 'Hot',
-    leadScore: 92,
-    scoreBreakdown: [
-      { label: 'Company Size: 500+', points: 45 },
-      { label: 'Budget Authority: Yes', points: 30 },
-      { label: 'Timeline: Immediately', points: 17 },
-    ],
-    lastActive: '10 mins ago',
-    tags: ['Enterprise', 'High Priority'],
-    assignedTo: 'Alex Rivera',
-    createdAt: '2026-08-01',
-  },
-  {
-    id: 'lead-102',
-    name: 'Marcus Vance',
-    email: 'm.vance@techwave.io',
-    phone: '+1 (555) 876-5432',
-    company: 'TechWave Inc',
-    companySize: '50-200',
-    budgetAuthority: true,
-    status: 'Warm',
-    leadScore: 78,
-    scoreBreakdown: [
-      { label: 'Company Size: 50-200', points: 30 },
-      { label: 'Budget Authority: Yes', points: 30 },
-      { label: 'Timeline: 3 Months', points: 18 },
-    ],
-    lastActive: '1 hour ago',
-    tags: ['Mid-Market', 'Demo Scheduled'],
-    assignedTo: 'Sarah Jenkins',
-    createdAt: '2026-07-30',
-  },
-  {
-    id: 'lead-103',
-    name: 'Elena Rostova',
-    email: 'elena@biogreen.de',
-    phone: '+49 171 555 0192',
-    company: 'BioGreen Solutions',
-    companySize: '20-50',
-    budgetAuthority: false,
-    status: 'Cold',
-    leadScore: 45,
-    scoreBreakdown: [
-      { label: 'Company Size: 20-50', points: 15 },
-      { label: 'Budget Authority: No', points: 0 },
-      { label: 'Timeline: Exploring', points: 30 },
-    ],
-    lastActive: '1 day ago',
-    tags: ['SMB', 'Nurture'],
-    assignedTo: 'AI Engine',
-    createdAt: '2026-07-28',
-  },
-  {
-    id: 'lead-104',
-    name: 'David Chen',
-    email: 'd.chen@apexscale.com',
-    phone: '+1 (555) 432-1098',
-    company: 'ApexScale Capital',
-    companySize: '1000+',
-    budgetAuthority: true,
-    status: 'Qualified',
-    leadScore: 98,
-    scoreBreakdown: [
-      { label: 'Company Size: 1000+', points: 45 },
-      { label: 'Budget Authority: Yes', points: 30 },
-      { label: 'Timeline: Immediate', points: 23 },
-    ],
-    lastActive: '5 mins ago',
-    tags: ['VIP', 'Contract Sent'],
-    assignedTo: 'Alex Rivera',
-    createdAt: '2026-08-01',
-  },
-];
-
-const initialConversations: Conversation[] = [
-  {
-    id: 'conv-1',
-    leadId: 'lead-101',
-    leadName: 'Sarah Jenkins',
-    leadPhone: '+1 (555) 234-5678',
-    leadAvatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150',
-    status: 'Hot',
-    leadScore: 92,
-    sentiment: 'positive',
-    unreadCount: 0,
-    humanTakeover: false,
-    lastMessageTime: '10:42 AM',
-    messages: [
-      {
-        id: 'm1',
-        sender: 'user',
-        senderName: 'Sarah Jenkins',
-        text: "Hi! We're looking to automate our WhatsApp lead scoring for 500+ agents. Is GreenLead ready for enterprise deployment?",
-        timestamp: '10:40 AM',
-      },
-      {
-        id: 'm2',
-        sender: 'ai',
-        senderName: 'AI Lead Agent',
-        text: 'Hello Sarah! Absolutely. GreenLead AI supports multi-tenant enterprise WhatsApp setups, custom CRM webhooks, and SOC2 compliance.',
-        timestamp: '10:41 AM',
-      },
-      {
-        id: 'm3',
-        sender: 'user',
-        senderName: 'Sarah Jenkins',
-        text: 'Great! Can we schedule a quick demo call today at 3 PM EST?',
-        timestamp: '10:42 AM',
-      },
-    ],
-  },
-  {
-    id: 'conv-2',
-    leadId: 'lead-102',
-    leadName: 'Marcus Vance',
-    leadPhone: '+1 (555) 876-5432',
-    leadAvatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150',
-    status: 'Warm',
-    leadScore: 78,
-    sentiment: 'neutral',
-    unreadCount: 1,
-    humanTakeover: true,
-    lastMessageTime: '09:15 AM',
-    messages: [
-      {
-        id: 'm21',
-        sender: 'user',
-        senderName: 'Marcus Vance',
-        text: 'What are your monthly subscription tiers for 200 team members?',
-        timestamp: '09:15 AM',
-      },
-    ],
-  },
-];
-
-const initialScheduled: ScheduledMessage[] = [
-  {
-    id: 'sm-1',
-    campaignTitle: 'Q3 Enterprise Lead Outreach',
-    recipientGroup: 'Hot Leads (Score > 85)',
-    recipientCount: 142,
-    templateName: 'Demo Invitation Broadcast',
-    scheduledTime: 'Today at 4:00 PM EST',
-    status: 'Scheduled',
-  },
-  {
-    id: 'sm-2',
-    campaignTitle: 'Post-Webinar Follow-up Blast',
-    recipientGroup: 'Webinar Attendees',
-    recipientCount: 520,
-    templateName: 'Resource Link & Call Booking',
-    scheduledTime: 'Tomorrow at 10:00 AM EST',
-    status: 'Scheduled',
-  },
-  {
-    id: 'sm-3',
-    campaignTitle: 'Re-engagement Reactivation',
-    recipientGroup: 'Inactive Cold Leads (>30 Days)',
-    recipientCount: 1250,
-    templateName: 'Special Offer Discount',
-    scheduledTime: 'Yesterday at 2:00 PM EST',
-    status: 'Sent',
-  },
-];
-
-const initialTemplates: MessageTemplate[] = [
-  {
-    id: 't-1',
-    name: 'Demo Invitation Broadcast',
-    category: 'Sales Closing',
-    content: "Hi {{first_name}}! Based on {{company}}'s team size, our AI engine can save your reps 12+ hours weekly. Would you be open for a 10-min demo?",
-    variables: ['{{first_name}}', '{{company}}'],
-    lastModified: 'Aug 1, 2026',
-  },
-  {
-    id: 't-2',
-    name: 'Resource Link & Call Booking',
-    category: 'Lead Nurture',
-    content: 'Hello {{first_name}}, thanks for checking out our whitepaper! Here is your download link: {{link}}. Let us know if you have questions.',
-    variables: ['{{first_name}}', '{{link}}'],
-    lastModified: 'Jul 28, 2026',
-  },
-  {
-    id: 't-3',
-    name: 'Instant Qualification Reply',
-    category: 'Onboarding',
-    content: 'Thanks for reaching out! To better assist {{company}}, how many sales reps currently manage your lead pipeline?',
-    variables: ['{{company}}'],
-    lastModified: 'Aug 2, 2026',
-  },
-];
-
-const initialContacts: Contact[] = [
-  {
-    id: 'c-1',
-    name: 'Sarah Jenkins',
-    phone: '+1 (555) 234-5678',
-    email: 's.jenkins@acmecorp.com',
-    company: 'Acme Corp',
-    tags: ['Enterprise', 'Hot'],
-    status: 'Hot',
-    totalMessagesSent: 18,
-    lastContacted: '10 mins ago',
-  },
-  {
-    id: 'c-2',
-    name: 'Marcus Vance',
-    phone: '+1 (555) 876-5432',
-    email: 'm.vance@techwave.io',
-    company: 'TechWave Inc',
-    tags: ['Mid-Market'],
-    status: 'Warm',
-    totalMessagesSent: 8,
-    lastContacted: '1 hour ago',
-  },
-  {
-    id: 'c-3',
-    name: 'David Chen',
-    phone: '+1 (555) 432-1098',
-    email: 'd.chen@apexscale.com',
-    company: 'ApexScale Capital',
-    tags: ['VIP', 'Qualified'],
-    status: 'Qualified',
-    totalMessagesSent: 34,
-    lastContacted: '5 mins ago',
-  },
-];
-
-const initialSettings: SettingsType = {
-  aiActive: true,
-  model: 'GPT-4o / Claude-3.5',
-  temperature: 0.7,
-  autoQualify: true,
-  webhookUrl: 'https://api.greenlead.ai/v1/webhooks/whatsapp',
-  apiKey: 'gl_live_89a7f39b1092e47c',
-  whatsappConnected: true,
-  phoneNumber: '+1 (800) 555-GREEN',
-};
-
-const defaultUser: UserProfile = {
-  name: 'Alex Rivera',
-  email: 'alex@leadengine.ai',
-  avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100',
-  role: 'Lead Administrator',
-  isLoggedIn: true,
-};
-
-function getStored<T>(key: string, defaultVal: T): T {
-  try {
-    const saved = localStorage.getItem(`greenlead_${key}`);
-    return saved ? JSON.parse(saved) : defaultVal;
-  } catch (e) {
-    return defaultVal;
-  }
-}
-
 export const CRMProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [hotThreshold, setHotThresholdState] = useState<number>(() => getStored('hotThreshold', 85));
-  const [questions, setQuestions] = useState<QualificationQuestion[]>(() => getStored('questions', initialQuestions));
-  const [leads, setLeads] = useState<Lead[]>(() => getStored('leads', initialLeads));
-  const [conversations, setConversations] = useState<Conversation[]>(() => getStored('conversations', initialConversations));
-  const [scheduledMessages, setScheduledMessages] = useState<ScheduledMessage[]>(() => getStored('scheduled', initialScheduled));
-  const [templates, setTemplates] = useState<MessageTemplate[]>(() => getStored('templates', initialTemplates));
-  const [contacts, setContacts] = useState<Contact[]>(() => getStored('contacts', initialContacts));
-  const [settings, setSettings] = useState<SettingsType>(() => getStored('settings', initialSettings));
-  const [user, setUser] = useState<UserProfile>(() => getStored('user', defaultUser));
+  const [hotThreshold, setHotThresholdState] = useState<number>(85);
+  const [questions, setQuestions] = useState<QualificationQuestion[]>([]);
+  const [leads, setLeads] = useState<Lead[]>([]);
+  const [conversations, setConversations] = useState<Conversation[]>([]);
+  const [scheduledMessages, setScheduledMessages] = useState<ScheduledMessage[]>([]);
+  const [templates, setTemplates] = useState<MessageTemplate[]>([]);
+  const [contacts, setContacts] = useState<Contact[]>([]);
+  const [settings, setSettings] = useState<SettingsType>({} as SettingsType);
+  
+  const [user, setUser] = useState<UserProfile>({
+    name: '',
+    email: '',
+    avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100',
+    role: '',
+    isLoggedIn: false,
+  });
 
   // Global Modals State
   const [isCreateLeadOpen, setCreateLeadOpen] = useState(false);
@@ -403,50 +113,200 @@ export const CRMProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const [isUpgradeOpen, setUpgradeOpen] = useState(false);
   const [isHelpOpen, setHelpOpen] = useState(false);
 
-  // Sync to localStorage
+  // Initialize Auth
   useEffect(() => {
-    localStorage.setItem('greenlead_hotThreshold', JSON.stringify(hotThreshold));
-    localStorage.setItem('greenlead_questions', JSON.stringify(questions));
-    localStorage.setItem('greenlead_leads', JSON.stringify(leads));
-    localStorage.setItem('greenlead_conversations', JSON.stringify(conversations));
-    localStorage.setItem('greenlead_scheduled', JSON.stringify(scheduledMessages));
-    localStorage.setItem('greenlead_templates', JSON.stringify(templates));
-    localStorage.setItem('greenlead_contacts', JSON.stringify(contacts));
-    localStorage.setItem('greenlead_settings', JSON.stringify(settings));
-    localStorage.setItem('greenlead_user', JSON.stringify(user));
-  }, [hotThreshold, questions, leads, conversations, scheduledMessages, templates, contacts, settings, user]);
-
-  const setHotThreshold = (val: number) => setHotThresholdState(val);
-
-  const login = (email: string, pass: string) => {
-    setUser({
-      name: email.split('@')[0].replace('.', ' ').toUpperCase(),
-      email: email,
-      avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100',
-      role: 'Lead Administrator',
-      isLoggedIn: true,
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session) {
+        setUser({
+          name: session.user.email?.split('@')[0] || 'User',
+          email: session.user.email || '',
+          avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100',
+          role: 'Admin',
+          isLoggedIn: true,
+        });
+      } else {
+        setAuthModalOpen(true);
+      }
     });
-    setAuthModalOpen(false);
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (session) {
+        setUser({
+          name: session.user.email?.split('@')[0] || 'User',
+          email: session.user.email || '',
+          avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100',
+          role: 'Admin',
+          isLoggedIn: true,
+        });
+        setAuthModalOpen(false);
+      } else {
+        setUser({ name: '', email: '', avatar: '', role: '', isLoggedIn: false });
+        setAuthModalOpen(true);
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  // Fetch Data when logged in
+  useEffect(() => {
+    if (!user.isLoggedIn) return;
+
+    const mapLead = (l: any): Lead => ({
+      ...l,
+      leadScore: l.lead_score,
+      companySize: l.company_size,
+      budgetAuthority: l.budget_authority,
+      scoreBreakdown: l.score_breakdown,
+      assignedTo: l.assigned_to,
+      lastActive: l.last_active,
+      createdAt: l.created_at,
+      updatedAt: l.updated_at,
+    });
+
+    const mapConversation = (c: any, leadsData: Lead[]): Conversation => {
+      const lead = leadsData.find((l) => l.id === c.lead_id);
+      return {
+        ...c,
+        leadId: c.lead_id,
+        leadName: lead ? lead.name : 'Unknown Lead',
+        leadPhone: lead ? lead.phone : '',
+        leadScore: lead ? lead.leadScore : 0,
+        humanTakeover: c.human_takeover,
+        lastMessageTime: c.last_message_time ? new Date(c.last_message_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '',
+        messages: (c.messages || []).map((m: any) => ({
+          ...m,
+          senderName: m.sender_name || (m.sender === 'user' ? (lead ? lead.name : 'User') : 'AI'),
+          timestamp: m.timestamp ? new Date(m.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : ''
+        })),
+      };
+    };
+
+    const mapScheduled = (s: any): ScheduledMessage => ({
+      ...s,
+      campaignTitle: s.campaign_title,
+      recipientGroup: s.recipient_group,
+      recipientCount: s.recipient_count,
+      templateId: s.template_id,
+      scheduledTime: s.scheduled_time,
+    });
+
+    const mapContact = (c: any): Contact => ({
+      ...c,
+      totalMessagesSent: c.total_messages_sent,
+      lastContacted: c.last_contacted,
+    });
+
+    const mapQuestion = (q: any): QualificationQuestion => ({
+      ...q,
+      fieldName: q.field_name,
+      fieldType: q.field_type,
+      hintText: q.hint_text,
+      weightPoints: q.weight_points,
+    });
+
+    const mapTemplate = (t: any): MessageTemplate => ({
+      ...t,
+      lastModified: t.last_modified,
+    });
+
+    const fetchData = async () => {
+      try {
+        const [
+          fetchedLeads,
+          fetchedConvs,
+          fetchedQuestions,
+          fetchedTemplates,
+          fetchedScheduled,
+          fetchedContacts,
+          fetchedSettings
+        ] = await Promise.all([
+          api.getLeads(),
+          api.getConversations(),
+          api.getQuestions(),
+          api.getTemplates(),
+          api.getScheduled(),
+          api.getContacts(),
+          api.getSettings(),
+        ]);
+
+        const mappedLeads = fetchedLeads.map(mapLead);
+        setLeads(mappedLeads);
+        setConversations(fetchedConvs.map((c: any) => mapConversation(c, mappedLeads)));
+        setQuestions(fetchedQuestions.map(mapQuestion));
+        setTemplates(fetchedTemplates.map(mapTemplate));
+        setScheduledMessages(fetchedScheduled.map(mapScheduled));
+        setContacts(fetchedContacts.map(mapContact));
+        
+        // Map backend settings to frontend
+        if (fetchedSettings) {
+          setSettings({
+            aiActive: fetchedSettings.ai_active ?? true,
+            model: fetchedSettings.ai_provider || 'claude',
+            temperature: 0.7,
+            autoQualify: true,
+            webhookUrl: import.meta.env.VITE_API_URL || '',
+            apiKey: fetchedSettings.meta_whatsapp_token || '',
+            whatsappConnected: !!fetchedSettings.meta_whatsapp_token,
+            phoneNumber: fetchedSettings.meta_phone_number_id || '',
+            verifyToken: fetchedSettings.meta_verify_token || '',
+          });
+          setHotThresholdState(fetchedSettings.hot_lead_threshold || 85);
+        }
+      } catch (err) {
+        console.error('Error fetching initial data:', err);
+      }
+    };
+
+    fetchData();
+
+    // Supabase Realtime Subscriptions
+    const channel = supabase.channel('schema-db-changes')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'conversations' }, async () => {
+        const [convs, lds] = await Promise.all([api.getConversations(), api.getLeads()]);
+        const mappedLeads = lds.map(mapLead);
+        setConversations(convs.map((c: any) => mapConversation(c, mappedLeads)));
+      })
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'messages' }, async () => {
+        const [convs, lds] = await Promise.all([api.getConversations(), api.getLeads()]);
+        const mappedLeads = lds.map(mapLead);
+        setConversations(convs.map((c: any) => mapConversation(c, mappedLeads)));
+      })
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'leads' }, async () => {
+        const lds = await api.getLeads();
+        setLeads(lds.map(mapLead));
+      })
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [user.isLoggedIn]);
+
+  const login = async (email: string, pass: string) => {
+    const { error } = await supabase.auth.signInWithPassword({ email, password: pass });
+    if (error) {
+      alert(error.message);
+      return false;
+    }
     return true;
   };
 
-  const signup = (name: string, email: string, pass: string) => {
-    setUser({
-      name: name || 'New Admin User',
-      email: email,
-      avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100',
-      role: 'Campaign Specialist',
-      isLoggedIn: true,
-    });
-    setAuthModalOpen(false);
+  const signup = async (name: string, email: string, pass: string) => {
+    const { error } = await supabase.auth.signUp({ email, password: pass });
+    if (error) {
+      alert(error.message);
+      return false;
+    }
+    return true;
   };
 
-  const logout = () => {
-    setUser((prev) => ({ ...prev, isLoggedIn: false }));
-    setAuthModalOpen(true);
+  const logout = async () => {
+    await supabase.auth.signOut();
   };
 
   const exportData = () => {
+    // (Unchanged simple CSV export)
     const csvContent =
       'data:text/csv;charset=utf-8,' +
       ['Name,Email,Phone,Company,Status,Score'].join(',') +
@@ -455,184 +315,169 @@ export const CRMProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     const encodedUri = encodeURI(csvContent);
     const link = document.createElement('a');
     link.setAttribute('href', encodedUri);
-    link.setAttribute('download', `greenlead_export_${Date.now()}.csv`);
+    link.setAttribute('download', `primequalify_export_${Date.now()}.csv`);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
   };
 
-  const updateSettings = (newSettings: Partial<SettingsType>) => {
-    setSettings((prev) => ({ ...prev, ...newSettings }));
+  const setHotThreshold = (val: number) => {
+    setHotThresholdState(val);
+    api.updateSettings({ hot_lead_threshold: val }).catch(console.error);
   };
 
-  const addQuestion = (question: Omit<QualificationQuestion, 'id'>) => {
-    const newQ: QualificationQuestion = { ...question, id: `q-${Date.now()}` };
+  const updateSettings = (newSettings: Partial<SettingsType>) => {
+    const merged = { ...settings, ...newSettings };
+    setSettings(merged);
+    
+    // Convert frontend settings to backend format
+    const backendUpdate: any = {};
+    if (newSettings.aiActive !== undefined) backendUpdate.ai_active = newSettings.aiActive;
+    if (newSettings.model !== undefined) backendUpdate.ai_provider = newSettings.model;
+    if (newSettings.apiKey !== undefined) backendUpdate.meta_whatsapp_token = newSettings.apiKey;
+    if (newSettings.phoneNumber !== undefined) backendUpdate.meta_phone_number_id = newSettings.phoneNumber;
+    if (newSettings.verifyToken !== undefined) backendUpdate.meta_verify_token = newSettings.verifyToken;
+    
+    if (Object.keys(backendUpdate).length > 0) {
+      api.updateSettings(backendUpdate).catch(console.error);
+    }
+  };
+
+  // Optimistic CRUD operations
+  const addQuestion = async (question: Omit<QualificationQuestion, 'id'>) => {
+    const newQ = await api.createQuestion(question);
     setQuestions((prev) => [...prev, newQ]);
   };
 
-  const removeQuestion = (id: string) => {
+  const removeQuestion = async (id: string) => {
     setQuestions((prev) => prev.filter((q) => q.id !== id));
+    await api.deleteQuestion(id);
   };
 
-  const updateQuestion = (id: string, updated: Partial<QualificationQuestion>) => {
+  const updateQuestion = async (id: string, updated: Partial<QualificationQuestion>) => {
     setQuestions((prev) => prev.map((q) => (q.id === id ? { ...q, ...updated } : q)));
+    await api.updateQuestion(id, updated);
   };
 
-  const addLead = (leadInput: Omit<Lead, 'id' | 'leadScore' | 'scoreBreakdown' | 'createdAt' | 'lastActive'> & Partial<Lead>) => {
+  const addLead = async (leadInput: Omit<Lead, 'id' | 'leadScore' | 'scoreBreakdown' | 'createdAt' | 'lastActive'> & Partial<Lead>) => {
     const calculatedScore = leadInput.leadScore ?? Math.floor(Math.random() * 40) + 50;
     const status: LeadStatus = leadInput.status || (calculatedScore >= hotThreshold ? 'Hot' : calculatedScore >= 60 ? 'Warm' : 'Cold');
-    const newLead: Lead = {
-      id: `lead-${Date.now()}`,
+    
+    const dbLead = {
       name: leadInput.name,
       email: leadInput.email,
       phone: leadInput.phone,
       company: leadInput.company,
-      companySize: leadInput.companySize || '50-200',
-      budgetAuthority: leadInput.budgetAuthority ?? true,
-      status,
-      leadScore: calculatedScore,
-      scoreBreakdown: leadInput.scoreBreakdown || [
-        { label: `Company Size: ${leadInput.companySize || '50-200'}`, points: 30 },
-        { label: `Budget Authority: ${leadInput.budgetAuthority ? 'Yes' : 'No'}`, points: leadInput.budgetAuthority ? 30 : 0 },
-      ],
-      lastActive: 'Just now',
-      tags: leadInput.tags || ['New Lead'],
-      assignedTo: leadInput.assignedTo || 'AI Engine',
-      createdAt: new Date().toISOString().split('T')[0],
-      notes: leadInput.notes || '',
+      company_size: leadInput.companySize,
+      budget_authority: leadInput.budgetAuthority,
+      status: status,
+      lead_score: calculatedScore,
+      tags: leadInput.tags,
+      assigned_to: leadInput.assignedTo || 'Alex Rivera',
+      notes: leadInput.notes
     };
+
+    const newLead = await api.createLead(dbLead);
     setLeads((prev) => [newLead, ...prev]);
-
-    // Also auto-create conversation
-    const newConv: Conversation = {
-      id: `conv-${Date.now()}`,
-      leadId: newLead.id,
-      leadName: newLead.name,
-      leadPhone: newLead.phone,
-      status: newLead.status,
-      leadScore: newLead.leadScore,
-      sentiment: 'positive',
-      unreadCount: 0,
-      humanTakeover: false,
-      lastMessageTime: 'Just now',
-      messages: [
-        {
-          id: `m-${Date.now()}`,
-          sender: 'ai',
-          senderName: 'AI Lead Agent',
-          text: `Hello ${newLead.name}! Thank you for reaching out to GreenLead AI. How can we help ${newLead.company} grow today?`,
-          timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-        },
-      ],
-    };
-    setConversations((prev) => [newConv, ...prev]);
   };
 
-  const updateLead = (id: string, updated: Partial<Lead>) => {
+  const updateLead = async (id: string, updated: Partial<Lead>) => {
     setLeads((prev) => prev.map((l) => (l.id === id ? { ...l, ...updated } : l)));
+    // map frontend camelCase to snake_case if necessary
+    await api.updateLead(id, updated);
   };
 
-  const deleteLead = (id: string) => {
+  const deleteLead = async (id: string) => {
     setLeads((prev) => prev.filter((l) => l.id !== id));
-    setConversations((prev) => prev.filter((c) => c.leadId !== id));
+    await api.deleteLead(id);
   };
 
-  const updateLeadStatus = (id: string, status: Lead['status']) => {
+  const updateLeadStatus = async (id: string, status: Lead['status']) => {
     setLeads((prev) => prev.map((l) => (l.id === id ? { ...l, status } : l)));
-    setConversations((prev) => prev.map((c) => (c.leadId === id ? { ...c, status } : c)));
+    await api.updateLead(id, { status });
   };
 
-  const addConversationMessage = (convId: string, msg: { text: string; sender: 'user' | 'ai' | 'agent' }) => {
-    setConversations((prev) =>
-      prev.map((conv) => {
-        if (conv.id === convId) {
-          const newMsg: ChatMessage = {
-            id: `msg-${Date.now()}`,
-            sender: msg.sender,
-            senderName: msg.sender === 'user' ? conv.leadName : msg.sender === 'ai' ? 'AI Lead Agent' : user.name,
-            text: msg.text,
-            timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-            status: 'sent',
-          };
-          return {
-            ...conv,
-            messages: [...conv.messages, newMsg],
-            lastMessageTime: 'Just now',
-          };
-        }
-        return conv;
-      })
-    );
-  };
-
-  const toggleHumanTakeover = (convId: string) => {
-    setConversations((prev) => prev.map((c) => (c.id === convId ? { ...c, humanTakeover: !c.humanTakeover } : c)));
-  };
-
-  const deleteConversation = (convId: string) => {
-    setConversations((prev) => prev.filter((c) => c.id !== convId));
-  };
-
-  const addScheduledMessage = (msg: Omit<ScheduledMessage, 'id'>) => {
-    const newMsg: ScheduledMessage = { ...msg, id: `sm-${Date.now()}` };
-    setScheduledMessages((prev) => [newMsg, ...prev]);
-  };
-
-  const updateScheduledMessageStatus = (id: string, status: ScheduledMessage['status']) => {
-    setScheduledMessages((prev) => prev.map((s) => (s.id === id ? { ...s, status } : s)));
-  };
-
-  const deleteScheduledMessage = (id: string) => {
-    setScheduledMessages((prev) => prev.filter((s) => s.id !== id));
-  };
-
-  const addTemplate = (template: Omit<MessageTemplate, 'id' | 'lastModified'>) => {
-    const newT: MessageTemplate = {
-      ...template,
-      id: `t-${Date.now()}`,
-      lastModified: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+  const addConversationMessage = async (convId: string, msg: { text: string; sender: 'user' | 'ai' | 'agent' }) => {
+    // Optimistic
+    const tempMsg: ChatMessage = {
+      id: `temp-${Date.now()}`,
+      sender: msg.sender,
+      senderName: user.name,
+      text: msg.text,
+      timestamp: new Date().toISOString(),
+      status: 'sent',
     };
+    setConversations((prev) =>
+      prev.map((c) => (c.id === convId ? { ...c, messages: [...c.messages, tempMsg] } : c))
+    );
+    
+    await api.addMessage(convId, { text: msg.text, sender: msg.sender });
+    // Realtime subscription will re-fetch and replace the temp message
+  };
+
+  const toggleHumanTakeover = async (convId: string) => {
+    const conv = conversations.find((c) => c.id === convId);
+    if (!conv) return;
+    setConversations((prev) => prev.map((c) => (c.id === convId ? { ...c, humanTakeover: !c.humanTakeover } : c)));
+    await api.toggleHumanTakeover(convId, !conv.humanTakeover);
+  };
+
+  const deleteConversation = async (convId: string) => {
+    setConversations((prev) => prev.filter((c) => c.id !== convId));
+    await api.deleteConversation(convId);
+  };
+
+  const addScheduledMessage = async (msg: Omit<ScheduledMessage, 'id'>) => {
+    const newSm = await api.createScheduled(msg);
+    setScheduledMessages((prev) => [newSm, ...prev]);
+  };
+
+  const updateScheduledMessageStatus = async (id: string, status: ScheduledMessage['status']) => {
+    setScheduledMessages((prev) => prev.map((s) => (s.id === id ? { ...s, status } : s)));
+    await api.updateScheduled(id, { status });
+  };
+
+  const deleteScheduledMessage = async (id: string) => {
+    setScheduledMessages((prev) => prev.filter((s) => s.id !== id));
+    await api.deleteScheduled(id);
+  };
+
+  const addTemplate = async (template: Omit<MessageTemplate, 'id' | 'lastModified'>) => {
+    const newT = await api.createTemplate(template);
     setTemplates((prev) => [newT, ...prev]);
   };
 
-  const updateTemplate = (id: string, updated: Partial<MessageTemplate>) => {
-    setTemplates((prev) =>
-      prev.map((t) =>
-        t.id === id
-          ? {
-              ...t,
-              ...updated,
-              lastModified: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
-            }
-          : t
-      )
-    );
+  const updateTemplate = async (id: string, updated: Partial<MessageTemplate>) => {
+    setTemplates((prev) => prev.map((t) => (t.id === id ? { ...t, ...updated } : t)));
+    await api.updateTemplate(id, updated);
   };
 
-  const deleteTemplate = (id: string) => {
+  const deleteTemplate = async (id: string) => {
     setTemplates((prev) => prev.filter((t) => t.id !== id));
+    await api.deleteTemplate(id);
   };
 
-  const addContact = (contact: Omit<Contact, 'id'>) => {
-    const newC: Contact = { ...contact, id: `c-${Date.now()}` };
-    setContacts((prev) => [...prev, newC]);
+  const addContact = async (contact: Omit<Contact, 'id'>) => {
+    const newC = await api.createContact(contact);
+    setContacts((prev) => [newC, ...prev]);
   };
 
-  const updateContact = (id: string, updated: Partial<Contact>) => {
+  const updateContact = async (id: string, updated: Partial<Contact>) => {
     setContacts((prev) => prev.map((c) => (c.id === id ? { ...c, ...updated } : c)));
+    await api.updateContact(id, updated);
   };
 
-  const deleteContact = (id: string) => {
+  const deleteContact = async (id: string) => {
     setContacts((prev) => prev.filter((c) => c.id !== id));
+    await api.deleteContact(id);
   };
 
-  const convertLeadToContact = (leadId: string) => {
+  const convertLeadToContact = async (leadId: string) => {
     const lead = leads.find((l) => l.id === leadId);
     if (!lead) return;
 
     if (!contacts.some((c) => c.email === lead.email)) {
-      const newContact: Contact = {
-        id: `c-${Date.now()}`,
+      await addContact({
         name: lead.name,
         email: lead.email,
         phone: lead.phone,
@@ -640,23 +485,20 @@ export const CRMProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         tags: lead.tags,
         status: lead.status,
         totalMessagesSent: 1,
-        lastContacted: 'Just now',
-      };
-      setContacts((prev) => [newContact, ...prev]);
+        lastContacted: new Date().toISOString(),
+      });
     }
   };
 
   const resetToDefaults = () => {
-    localStorage.clear();
+    // Only clears local state, not DB
     setHotThresholdState(85);
-    setQuestions(initialQuestions);
-    setLeads(initialLeads);
-    setConversations(initialConversations);
-    setScheduledMessages(initialScheduled);
-    setTemplates(initialTemplates);
-    setContacts(initialContacts);
-    setSettings(initialSettings);
-    setUser(defaultUser);
+    setQuestions([]);
+    setLeads([]);
+    setConversations([]);
+    setScheduledMessages([]);
+    setTemplates([]);
+    setContacts([]);
   };
 
   return (
@@ -720,5 +562,3 @@ export const useCRM = () => {
   if (!context) throw new Error('useCRM must be used within CRMProvider');
   return context;
 };
-
-

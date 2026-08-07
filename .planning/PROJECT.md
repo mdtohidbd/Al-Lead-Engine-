@@ -13,10 +13,10 @@ A robust, secure backend that correctly manages single-tenant data, integrates A
 - ✓ Existing Context API structure (`CRMContext.tsx`) for global state consumption — existing
 
 ### Active
-- [ ] Task 0: Reconcile `LeadStatus` enum globally
-- [ ] Task 1: Setup Supabase project with RLS and specific table schema
-- [ ] Task 2: Scaffold Node.js backend (Express/Fastify + TypeScript)
-- [ ] Task 3: Supabase Auth integration (JWT verification in backend)
+- [x] Task 0: Reconcile `LeadStatus` enum globally
+- [x] Task 1: Setup Supabase project with RLS and specific table schema
+- [x] Task 2: Scaffold Node.js backend (Express/Fastify + TypeScript)
+- [x] Task 3: Supabase Auth integration (JWT verification in backend)
 - [ ] Task 4: Core CRUD endpoints replacing mock functions
 - [ ] Task 5: Secure Settings implementation (backend-only secrets)
 - [ ] Task 6: WhatsApp webhook and AI reply engine

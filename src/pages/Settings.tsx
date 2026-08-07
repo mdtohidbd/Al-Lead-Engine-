@@ -79,23 +79,22 @@ export const Settings: React.FC = () => {
             <div>
               <label className="font-bold text-gray-600 block mb-1">Model Selection</label>
               <select
-                value={settings.model}
+                value={settings.model || 'claude'}
                 onChange={(e) => updateSettings({ model: e.target.value })}
                 className="w-full bg-gray-50 border border-gray-200 rounded-lg p-2 font-medium text-[#151c27] focus:outline-none focus:border-[#22c55e]"
               >
-                <option value="GPT-4o / Claude-3.5">GPT-4o / Claude-3.5 (Recommended High Accuracy)</option>
-                <option value="GPT-3.5 Turbo">GPT-3.5 Turbo (Fastest Response Time)</option>
-                <option value="Llama-3.1 70B">Llama-3.1 70B (Open Source Enterprise)</option>
+                <option value="claude">Claude 3.5 Sonnet (Recommended)</option>
+                <option value="gemini">Gemini 2.5 Flash (Fastest)</option>
               </select>
             </div>
             <div>
-              <label className="font-bold text-gray-600 block mb-1">Creativity Temperature: {settings.temperature}</label>
+              <label className="font-bold text-gray-600 block mb-1">Creativity Temperature: {settings.temperature || 0.7}</label>
               <input
                 type="range"
                 min="0"
                 max="1"
                 step="0.1"
-                value={settings.temperature}
+                value={settings.temperature || 0.7}
                 onChange={(e) => updateSettings({ temperature: parseFloat(e.target.value) })}
                 className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-[#22c55e]"
               />
@@ -111,22 +110,46 @@ export const Settings: React.FC = () => {
           </h3>
           <div className="space-y-3">
             <div>
-              <label className="font-bold text-gray-600 block mb-1">GreenLead API Key</label>
+              <label className="font-bold text-gray-600 block mb-1">WhatsApp Access Token</label>
               <input
                 type="password"
-                value={settings.apiKey}
+                value={settings.apiKey || ''}
                 onChange={(e) => updateSettings({ apiKey: e.target.value })}
                 className="w-full bg-gray-50 border border-gray-200 rounded-lg p-2 font-mono text-[#151c27] focus:outline-none focus:border-[#22c55e]"
+                placeholder="EAAL..."
               />
             </div>
             <div>
-              <label className="font-bold text-gray-600 block mb-1">WhatsApp Webhook Listener URL</label>
+              <label className="font-bold text-gray-600 block mb-1">WhatsApp Phone Number ID</label>
               <input
                 type="text"
-                value={settings.webhookUrl}
-                onChange={(e) => updateSettings({ webhookUrl: e.target.value })}
+                value={settings.phoneNumber || ''}
+                onChange={(e) => updateSettings({ phoneNumber: e.target.value })}
                 className="w-full bg-gray-50 border border-gray-200 rounded-lg p-2 font-mono text-[#151c27] focus:outline-none focus:border-[#22c55e]"
+                placeholder="1045..."
               />
+            </div>
+            <div>
+              <label className="font-bold text-gray-600 block mb-1">WhatsApp Webhook Verify Token</label>
+              <input
+                type="text"
+                value={settings.verifyToken || ''}
+                onChange={(e) => updateSettings({ verifyToken: e.target.value })}
+                className="w-full bg-gray-50 border border-gray-200 rounded-lg p-2 font-mono text-[#151c27] focus:outline-none focus:border-[#22c55e]"
+                placeholder="E.g. primequalify4242"
+              />
+            </div>
+            <div>
+              <label className="font-bold text-gray-600 block mb-1">WhatsApp Webhook Listener URL (Informational)</label>
+              <input
+                type="text"
+                readOnly
+                value={`${settings.webhookUrl || ''}/webhook/whatsapp`}
+                className="w-full bg-gray-100 border border-gray-200 rounded-lg p-2 font-mono text-gray-500 cursor-not-allowed focus:outline-none"
+              />
+              <p className="text-[10px] text-gray-500 mt-1">
+                Note: This is not saved to the database. For local testing with Meta, replace <code className="bg-gray-100 px-1 rounded">http://localhost:3001</code> with your public <b>ngrok URL</b>.
+              </p>
             </div>
           </div>
         </div>

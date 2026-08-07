@@ -7,7 +7,7 @@ export const TestChat: React.FC = () => {
   const [messages, setMessages] = useState<Array<{ sender: 'user' | 'ai'; text: string; time: string }>>([
     {
       sender: 'ai',
-      text: "Hello! I'm your GreenLead AI agent. I'll automatically score your answers against your active qualification rules. What is your company size and purchasing timeline?",
+      text: "Hello! I'm your Prime Qualify AI agent. I'll automatically score your answers against your active qualification rules. What is your company size and purchasing timeline?",
       time: 'Just now',
     },
   ]);
@@ -53,7 +53,7 @@ export const TestChat: React.FC = () => {
     setMessages([
       {
         sender: 'ai',
-        text: "Sandbox reset! I'm your GreenLead AI agent ready to test your qualification pipeline.",
+        text: "Sandbox reset! I'm your Prime Qualify AI agent ready to test your qualification pipeline.",
         time: 'Just now',
       },
     ]);

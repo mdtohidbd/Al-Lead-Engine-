@@ -22,9 +22,9 @@ export const Sidebar: React.FC = () => {
           </div>
           <div className="flex flex-col">
             <span className="font-extrabold text-base tracking-tight bg-gradient-to-r from-white via-slate-100 to-slate-300 bg-clip-text text-transparent">
-              AI Lead Engine
+              Prime Qualify
             </span>
-            <span className="text-[10px] text-emerald-400/80 font-bold tracking-wider uppercase">Enterprise v2.4</span>
+            <span className="text-[10px] text-emerald-400/80 font-bold tracking-wider uppercase">Powered by Skybridge Systems</span>
           </div>
         </div>
         <div className="flex items-center gap-2 px-2 py-1 rounded-lg bg-emerald-950/60 border border-emerald-800/40 w-fit">

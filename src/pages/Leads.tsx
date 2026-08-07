@@ -95,7 +95,7 @@ export const Leads: React.FC = () => {
     const encodedUri = encodeURI(csvContent);
     const link = document.createElement('a');
     link.setAttribute('href', encodedUri);
-    link.setAttribute('download', `greenlead_leads_${new Date().toISOString().split('T')[0]}.csv`);
+    link.setAttribute('download', `primequalify_leads_${new Date().toISOString().split('T')[0]}.csv`);
     document.body.appendChild(link);
     link.click();
   };

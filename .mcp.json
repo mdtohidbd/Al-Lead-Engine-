@@ -6,7 +6,7 @@
         "c:\\Users\\KILLBIT\\.antigravity-ide\\extensions\\dawoodahmad.brainsync-3.0.12-universal\\dist\\mcp-server.js"
       ],
       "env": {
-        "BRAINSYNC_ENV_FILE": "C:\\Users\\KILLBIT\\.brainsync\\al-lead-engine\\mcp-secret-env.json"
+        "BRAINSYNC_ENV_FILE": "C:\\Users\\KILLBIT\\.bsync_core\\al-lead-engine\\mcp-secret-env.json"
       }
     }
   }

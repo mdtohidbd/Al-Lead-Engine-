@@ -7,7 +7,7 @@
       ],
       "type": "stdio",
       "env": {
-        "BRAINSYNC_ENV_FILE": "C:\\Users\\KILLBIT\\.brainsync\\al-lead-engine\\mcp-secret-env.json"
+        "BRAINSYNC_ENV_FILE": "C:\\Users\\KILLBIT\\.bsync_core\\al-lead-engine\\mcp-secret-env.json"
       }
     }
   }

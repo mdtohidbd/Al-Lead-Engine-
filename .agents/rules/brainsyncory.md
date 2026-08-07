@@ -1,7 +1,7 @@
 
 
 # Project Memory — Al-Lead-Engine-
-> 29 notes | Score threshold: >40
+> 33 notes | Score threshold: >40
 
 ## Safety — Never Run Destructive Commands
 
@@ -18,12 +18,7 @@
 
 **Stack:** TypeScript · React + Tailwind
 
-## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Active: `.`
-
-- **convention in auth.js**
-- **convention in emiController.js**
-
-## Project Standards
+## 📝 NOTE: 1 uncommitted file(s) in working tree.\n\n## Project Standards
 
 - convention in auth.js
 - convention in emiController.js

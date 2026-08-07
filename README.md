@@ -1,4 +1,4 @@
-# Skybridge — AI WhatsApp Lead Qualification Platform
+# Prime Qualify — The AI WhatsApp Qualification Platform
 
 ## What this project is
 
